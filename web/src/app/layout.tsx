@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { DotField } from "@/components/layout/DotField";
 import { AmbientGlow } from "@/components/layout/AmbientGlow";
+import { Nav } from "@/components/layout/Nav";
 
 // Minimal metadata (spec 002 §6). Remaining SEO artifacts are the deferred
 // deployment effort (§7).
@@ -24,8 +25,11 @@ export default function RootLayout({
         {/* Fixed background paint (z-0), behind content. */}
         <DotField />
         <AmbientGlow />
-        {/* Content sits above the background layers. */}
-        <div className="relative z-10 flex min-h-svh flex-col">{children}</div>
+        <Nav />
+        {/* Content sits above the background layers. #top anchors the wordmark. */}
+        <div id="top" className="relative z-10 flex min-h-svh flex-col">
+          {children}
+        </div>
       </body>
     </html>
   );

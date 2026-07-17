@@ -54,6 +54,14 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Letter-spacing — spec 001 typography */
+  --tracking-label: 0.14em; /* mono meta / eyebrows / nav links */
+  --tracking-display: -0.035em; /* display headline */
+
+  /* Motion defaults — spec 001 §4: hover transitions 180ms ease */
+  --default-transition-duration: 180ms;
+  --default-transition-timing-function: ease;
 }
 
 /*
