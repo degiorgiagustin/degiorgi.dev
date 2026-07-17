@@ -9,7 +9,8 @@
  */
 
 export const site = {
-  wordmark: "degiorgi.dev",
+  // Split so the TLD can render dimmed, per the prototype wordmark.
+  wordmark: { name: "degiorgi", tld: ".dev" },
   status: "Open to senior roles",
 } as const;
 
@@ -33,7 +34,7 @@ export const hero = {
   scrollHint: "The journey",
 } as const;
 
-export type TimelineStep = {
+export type JourneyStep = {
   period: string;
   role: string;
   org: string;
@@ -43,6 +44,8 @@ export type TimelineStep = {
 
 export const journey = {
   eyebrow: { index: "01", label: "The journey" },
+  intro: "Six chapters, from banking-grade systems to production AI.", // DRAFT — owner to review
+
   // PLACEHOLDER — six steps with owner's real periods/orgs/narratives (spec 002 §4.3).
   steps: [
     {
@@ -87,7 +90,7 @@ export const journey = {
       narrative: "PLACEHOLDER — what you are building today.",
       tags: ["PLACEHOLDER"],
     },
-  ] satisfies readonly TimelineStep[],
+  ] satisfies readonly JourneyStep[],
 } as const;
 
 export type WorkCard = {

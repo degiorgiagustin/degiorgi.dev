@@ -18,6 +18,7 @@
   --text-2: #9a9fa8;
   --text-3: #5c6168;
   --gold: #e3b34c;
+  --gold-light: #f6d68a;
   --gold-dim: rgba(227, 179, 76, 0.14);
 
   /* Radius — spec 001 §2 (panels, buttons, pills, badges) */
@@ -29,6 +30,10 @@
   /* Elevation — spec 001 §2 */
   --shadow-panel: 0 24px 60px -24px rgba(0, 0, 0, 0.85);
   --shadow-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /* Gold glow — prototype timeline (rail fill / lit node) */
+  --shadow-glow-gold: 0 0 12px rgba(227, 179, 76, 0.4);
+  --shadow-glow-gold-strong: 0 0 12px rgba(227, 179, 76, 0.7);
 }
 
 @theme inline {
@@ -42,6 +47,7 @@
   --color-text-2: var(--text-2);
   --color-text-3: var(--text-3);
   --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
   --color-gold-dim: var(--gold-dim);
 
   --radius-panel: var(--radius-panel);
@@ -51,6 +57,8 @@
 
   --shadow-panel: var(--shadow-panel);
   --shadow-bevel: var(--shadow-bevel);
+  --shadow-glow-gold: var(--shadow-glow-gold);
+  --shadow-glow-gold-strong: var(--shadow-glow-gold-strong);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -146,6 +154,63 @@ body {
   filter: blur(12px);
 }
 
+/*
+ * Timeline progress fill height (spec 002 §4.3). Consumes the --fill custom
+ * property that Timeline sets at runtime; height:var can't be a Tailwind
+ * utility without an arbitrary value, so this one structural rule lives here.
+ */
+.timeline-fill {
+  height: var(--fill, 0);
+}
+
+/*
+ * Motion choreography — spec 001 §4, ported from the approved prototype.
+ * Global CSS classes (not per-component utilities) because they encode a
+ * cross-cutting animation language: `.stage` is the once-per-load staggered
+ * entrance (hero), `.rv` the scroll reveal toggled by the Reveal component.
+ * See docs/adr/003-motion-choreography-css-classes.md.
+ */
+.stage {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: stage-in 0.8s ease forwards;
+}
+
+/* Entrance stagger — prototype delays .1 / .2 / .32 / .46s. */
+.stage-2 {
+  animation-delay: 0.1s;
+}
+.stage-3 {
+  animation-delay: 0.2s;
+}
+.stage-4 {
+  animation-delay: 0.32s;
+}
+.stage-5 {
+  animation-delay: 0.46s;
+}
+
+@keyframes stage-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Scroll reveal — hidden until the Reveal component adds `.in` on intersect. */
+.rv {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+
 /* Accessibility floor — spec 001 §4: reduced motion disables all motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -155,5 +220,13 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Choreographed elements render in final state, never hidden. */
+  .stage,
+  .rv {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 }

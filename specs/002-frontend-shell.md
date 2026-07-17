@@ -65,9 +65,10 @@ web/src/
 
 ## 4. Page sections (top to bottom)
 
-1. **Nav** (fixed, glass): wordmark (mono), anchor links Journey / Work /
-   Contact, status pill "Open to senior roles". Mobile: wordmark + status dot
-   only (links live as in-page anchors; no hamburger in Phase 1).
+1. **Nav** (fixed, glass): three zones per the prototype — wordmark (mono,
+   dimmed TLD) left, anchor links Journey / Work / Contact **centered** (plain
+   sans, not mono), status pill "Open to senior roles" right. Mobile: wordmark
+   + status dot only (links live as in-page anchors; no hamburger in Phase 1).
 2. **Hero** (min-height 100svh, centered): eyebrow → gradient headline
    ("Systems that move money. / AI that shows its work.", second line gold) →
    subline → **console slot** → scroll hint anchoring to #journey. This shell
@@ -80,6 +81,11 @@ web/src/
    mono period label, role + org, 1–2 sentence narrative, tags. Six steps,
    data from `messages.ts`. Reduced motion: rail fully filled, all nodes lit.
    Implementation Phase 1: scroll listener + rAF (no GSAP).
+   Desktop (lg+): two-column composition — a **sticky left header** (eyebrow +
+   one-line intro) beside the timeline column, so the section fills wide
+   viewports instead of a narrow centered ribbon. Collapses to single column
+   (header above the timeline) below lg. Section container width is `max-w-6xl`,
+   aligned with the nav.
 4. **Work** (`#work`): header ("02 · Selected work", "Case studies, not
    screenshots.") + 3 cards (Gastra / Banking at scale / degiorgi.dev), each
    with kind label, title, summary, "read case study →" affordance (stub links

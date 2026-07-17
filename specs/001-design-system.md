@@ -32,6 +32,7 @@ variable and referenced from `@theme`. Components must never hardcode raw values
 | `--text-2` | `#9a9fa8` | Secondary text |
 | `--text-3` | `#5c6168` | Tertiary / labels / meta |
 | `--gold` | `#e3b34c` | THE accent. Cursor, status dot, trace scores, one headline segment, focus rings |
+| `--gold-light` | `#f6d68a` | Light end of gold gradients (headline accent segment, per prototype) |
 | `--gold-dim` | `rgba(227,179,76,0.14)` | Gold-tinted fills (status pill, source chips) |
 
 Accent discipline is a hard rule: gold never appears on large surfaces, body
@@ -45,6 +46,9 @@ text, or more than ~3 elements per viewport.
 - Display headline: `clamp(38px, 6.4vw, 76px)`, weight 500, tracking `-0.035em`,
   line-height 1.06, white→transparent vertical gradient
   (`linear-gradient(180deg, #fff 30%, rgba(255,255,255,0.42))` via background-clip).
+  The gold accent segment uses the same technique with a gold gradient
+  (`linear-gradient(180deg, var(--gold-light) 20%, rgba(227,179,76,0.55))`),
+  per the prototype.
 - Body: 15–17.5px fluid, line-height 1.65.
 - Mono meta text: 10–13.5px, uppercase labels with `letter-spacing: 0.14em`.
 
