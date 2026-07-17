@@ -1,5 +1,11 @@
-// Phase 1 placeholder — the token foundation and background layers render here.
-// Hero and all page sections arrive in later phases (spec 002 §4).
+import { Hero } from "@/components/hero/Hero";
+
+// Home — composes the single-page sections top to bottom (spec 002 §4).
+// Journey / Work / Stack / Contact arrive in later phases.
 export default function Home() {
-  return <main className="flex flex-1 flex-col" />;
+  return (
+    <main className="flex flex-1 flex-col">
+      <Hero />
+    </main>
+  );
 }

@@ -62,6 +62,24 @@
   /* Motion defaults — spec 001 §4: hover transitions 180ms ease */
   --default-transition-duration: 180ms;
   --default-transition-timing-function: ease;
+
+  /* Type scale — spec 001 typography */
+  --text-display: clamp(38px, 6.4vw, 76px); /* fluid display headline */
+  --leading-display: 1.06;
+  --leading-body: 1.65;
+
+  /* Scroll-hint drift (spec 001 §4). Disabled under reduced motion. */
+  --animate-drift: drift 2.4s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
 }
 
 /*
