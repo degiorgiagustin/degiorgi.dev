@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — spec 001 §2. Single source of truth.
+ * Raw values declared once here as :root custom properties; the @theme block
+ * below exposes them as Tailwind utilities. Components consume utilities or
+ * var(--token) only — never raw hex/rgba. See docs/adr/001.
+ */
+:root {
+  /* Color */
+  --bg: #0a0a0c;
+  --surface: rgba(255, 255, 255, 0.03);
+  --glass: rgba(16, 17, 20, 0.55);
+  --glass-solid: rgba(18, 19, 22, 0.92);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --text: #f2f3f5;
+  --text-2: #9a9fa8;
+  --text-3: #5c6168;
+  --gold: #e3b34c;
+  --gold-dim: rgba(227, 179, 76, 0.14);
+
+  /* Radius — spec 001 §2 (panels, buttons, pills, badges) */
+  --radius-panel: 14px;
+  --radius-button: 7px;
+  --radius-pill: 99px;
+  --radius-badge: 5px;
+
+  /* Elevation — spec 001 §2 */
+  --shadow-panel: 0 24px 60px -24px rgba(0, 0, 0, 0.85);
+  --shadow-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-glass: var(--glass);
+  --color-glass-solid: var(--glass-solid);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-gold: var(--gold);
+  --color-gold-dim: var(--gold-dim);
+
+  --radius-panel: var(--radius-panel);
+  --radius-button: var(--radius-button);
+  --radius-pill: var(--radius-pill);
+  --radius-badge: var(--radius-badge);
+
+  --shadow-panel: var(--shadow-panel);
+  --shadow-bevel: var(--shadow-bevel);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/*
+ * Base layer. The near-black page background lives on <html> so the fixed
+ * background paint layers (.dot-field / .ambient-glow, z-0) render above it
+ * while page content (z-10) renders above them.
+ */
+html {
+  background: var(--bg);
+}
+
+body {
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Visible focus — gold ring per spec 001 §2 accent list. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/*
+ * Signature background — spec 001 §3. Two fixed, pointer-events-none paint
+ * layers. These are full-viewport custom paints (radial-gradient + mask), not
+ * reusable utility patterns, so their literal values from §3 live here in the
+ * stylesheet rather than as Tailwind arbitrary values in the component.
+ */
+.dot-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.055) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 90% 60% at 50% 18%,
+    #000 25%,
+    transparent 75%
+  );
+  mask-image: radial-gradient(
+    ellipse 90% 60% at 50% 18%,
+    #000 25%,
+    transparent 75%
+  );
+}
+
+.ambient-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 55% 40% at 50% 0%,
+    rgba(255, 255, 255, 0.055),
+    rgba(227, 179, 76, 0.045) 45%,
+    transparent 72%
+  );
+  filter: blur(12px);
+}
+
+/* Accessibility floor — spec 001 §4: reduced motion disables all motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

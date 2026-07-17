@@ -14,7 +14,9 @@ global treatment. The design should feel like an expensive engineering tool.
 ## 2. Tokens
 
 Implement as CSS custom properties on `:root`, exposed through the Tailwind v4
-theme. Components must never hardcode raw values.
+theme. Tailwind v4 is CSS-first: the theme lives in an `@theme` block inside
+`globals.css` (no `tailwind.config.js`); each token is declared once as a `:root`
+variable and referenced from `@theme`. Components must never hardcode raw values.
 
 ### Color
 
@@ -23,6 +25,7 @@ theme. Components must never hardcode raw values.
 | `--bg` | `#0a0a0c` | Page background (near-black, never pure black) |
 | `--surface` | `rgba(255,255,255,0.03)` | Subtle raised surfaces (chips, buttons) |
 | `--glass` | `rgba(16,17,20,0.55)` | Glass panels — always with backdrop blur |
+| `--glass-solid` | `rgba(18,19,22,0.92)` | Near-opaque glass fallback when the 3-blur budget is exceeded (mobile); used by the dock answer card (spec 003) |
 | `--line` | `rgba(255,255,255,0.08)` | Default hairline borders |
 | `--line-strong` | `rgba(255,255,255,0.14)` | Hover borders, emphasis rules |
 | `--text` | `#f2f3f5` | Primary text |
@@ -63,6 +66,9 @@ Two fixed, pointer-events-none layers behind everything:
    toward edges and bottom.
 2. **Ambient light**: a single blurred warm radial glow anchored top-center
    (white→gold at ≤ 5.5% alpha). No animated blobs.
+
+These two layers are implemented as dedicated CSS classes (a scoped exception to
+the utility-first rule) — see `docs/adr/002-background-paint-as-css-classes.md`.
 
 ## 4. Motion language
 
