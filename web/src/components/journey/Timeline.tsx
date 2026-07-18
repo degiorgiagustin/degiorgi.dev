@@ -74,8 +74,11 @@ export function Timeline() {
           <Eyebrow index={journey.eyebrow.index}>
             {journey.eyebrow.label}
           </Eyebrow>
+          <h2 className="text-text mt-2.5 text-2xl font-medium tracking-tight lg:text-3xl">
+            {journey.headline}
+          </h2>
           <p className="leading-body text-text-2 mt-4 max-w-xs text-sm">
-            {journey.intro}
+            {journey.subline}
           </p>
         </Reveal>
       </header>

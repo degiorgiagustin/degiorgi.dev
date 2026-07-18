@@ -8,6 +8,44 @@
  * email, social URLs, CV). These are content blockers, not build blockers.
  */
 
+interface Section {
+  eyebrow: { index: string; label: string };
+  headline: string;
+  subline: string;
+}
+
+interface SectionWithSteps extends Section {
+  steps: readonly JourneyStep[];
+}
+
+interface SectionWithCards extends Section {
+  cards: readonly WorkCard[];
+  linkLabel: string;
+}
+
+interface SectionWithCTA extends Section {
+  cta: {
+    email: string;
+    linkedin: string;
+    github: string;
+    x: string;
+  };
+  badge: string;
+}
+
+interface SectionWithTags extends Section {
+  tags: readonly string[];
+  footnote: string;
+}
+
+interface SectionWithLinks extends Section {
+  email: string;
+  linkedin: string;
+  github: string;
+  x: string;
+  cv: string;
+}
+
 export const site = {
   // Split so the TLD can render dimmed, per the prototype wordmark.
   wordmark: { name: "degiorgi", tld: ".dev" },
@@ -24,7 +62,6 @@ export const nav = {
 
 export const hero = {
   eyebrow: "Software Engineer · Fintech & AI",
-  // Second line renders in gold (spec 002 §4.2).
   headline: {
     lead: "Systems that move money.",
     accent: "AI that shows its work.",
@@ -42,10 +79,10 @@ export type JourneyStep = {
   tags: readonly string[];
 };
 
-export const journey = {
+export const journey: SectionWithSteps = {
   eyebrow: { index: "01", label: "The journey" },
-  intro: "Six chapters, from banking-grade systems to production AI.", // DRAFT — owner to review
-
+  headline: "Over 5+ years, one thread: systems people trust.",
+  subline: "Six chapters, from banking-grade systems to production AI.",
   // PLACEHOLDER — six steps with owner's real periods/orgs/narratives (spec 002 §4.3).
   steps: [
     {
@@ -100,9 +137,11 @@ export type WorkCard = {
   href: string;
 };
 
-export const work = {
+export const work: SectionWithCards = {
   eyebrow: { index: "02", label: "Selected work" },
   headline: "Case studies, not screenshots.",
+  subline: "I've worked on a variety of projects, from banking-grade systems to production AI.",
+  linkLabel: "read case study →",
   cards: [
     {
       kind: "Product · AI",
@@ -128,9 +167,10 @@ export const work = {
   ] satisfies readonly WorkCard[],
 } as const;
 
-export const stack = {
+export const stack: SectionWithTags = {
   eyebrow: { index: "03", label: "Stack" },
-  // Grounded in spec 000 (Java/Spring systems + Python LLM engineering).
+  headline: "Grounded in spec 000 (Java/Spring systems + Python LLM engineering).",
+  subline: "Grounded in spec 000 (Java/Spring systems + Python LLM engineering).",
   tags: [
     "Java",
     "Spring",
@@ -145,21 +185,19 @@ export const stack = {
   footnote: "// tools change. The discipline doesn't.",
 } as const;
 
-export const contact = {
+export const contact: SectionWithCTA = {
+  eyebrow: { index: "04", label: "Contact" },
   headline: "Let's talk.",
-  subline:
-    "PLACEHOLDER — DRAFT: one line inviting recruiters/engineers to reach out.",
-  cta: {
-    email: "Email me",
-    linkedin: "LinkedIn",
-    github: "GitHub",
-    x: "X",
-  },
+  subline: "PLACEHOLDER — DRAFT: one line inviting recruiters/engineers to reach out.",
+  cta: { email: "Email me", linkedin: "LinkedIn", github: "GitHub", x: "X" },
   badge: "GET /contact → 200 OK",
 } as const;
 
 // External links — (spec 002 §8).
-export const links = {
+export const links: SectionWithLinks = {
+  eyebrow: { index: "05", label: "Links" },
+  headline: "Let's talk.",
+  subline: "PLACEHOLDER — DRAFT: one line inviting recruiters/engineers to reach out.",
   email: "hello@degiorgi.dev",
   linkedin: "https://www.linkedin.com/in/agustindegiorgi",
   github: "https://github.com/degiorgiagustin",
