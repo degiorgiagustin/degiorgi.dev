@@ -7,6 +7,7 @@
 import { useEffect, useRef } from "react";
 import { journey } from "@/content/messages";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { PageSection } from "@/components/layout/PageSection";
 import { Reveal } from "@/components/layout/Reveal";
 import { TimelineStep } from "@/components/journey/TimelineStep";
 
@@ -64,9 +65,9 @@ export function Timeline() {
   }, []);
 
   return (
-    <section
+    <PageSection
       id="journey"
-      className="mx-auto max-w-6xl scroll-mt-16 px-4 py-24 lg:grid lg:grid-cols-3 lg:gap-12"
+      className="py-24 lg:grid lg:grid-cols-3 lg:gap-12"
     >
       {/* Desktop: sticky header column beside the timeline; mobile: on top. */}
       <header className="mb-10 lg:sticky lg:top-24 lg:col-span-1 lg:mb-0 lg:self-start">
@@ -113,6 +114,6 @@ export function Timeline() {
           </li>
         ))}
       </ol>
-    </section>
+    </PageSection>
   );
 }

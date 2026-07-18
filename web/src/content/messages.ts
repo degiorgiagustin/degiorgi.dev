@@ -8,44 +8,6 @@
  * email, social URLs, CV). These are content blockers, not build blockers.
  */
 
-interface Section {
-  eyebrow: { index: string; label: string };
-  headline: string;
-  subline: string;
-}
-
-interface SectionWithSteps extends Section {
-  steps: readonly JourneyStep[];
-}
-
-interface SectionWithCards extends Section {
-  cards: readonly WorkCard[];
-  linkLabel: string;
-}
-
-interface SectionWithCTA extends Section {
-  cta: {
-    email: string;
-    linkedin: string;
-    github: string;
-    x: string;
-  };
-  badge: string;
-}
-
-interface SectionWithTags extends Section {
-  tags: readonly string[];
-  footnote: string;
-}
-
-interface SectionWithLinks extends Section {
-  email: string;
-  linkedin: string;
-  github: string;
-  x: string;
-  cv: string;
-}
-
 export const site = {
   // Split so the TLD can render dimmed, per the prototype wordmark.
   wordmark: { name: "degiorgi", tld: ".dev" },
@@ -79,7 +41,7 @@ export type JourneyStep = {
   tags: readonly string[];
 };
 
-export const journey: SectionWithSteps = {
+export const journey = {
   eyebrow: { index: "01", label: "The journey" },
   headline: "Over 5+ years, one thread: systems people trust.",
   subline: "Six chapters, from banking-grade systems to production AI.",
@@ -137,10 +99,11 @@ export type WorkCard = {
   href: string;
 };
 
-export const work: SectionWithCards = {
+export const work = {
   eyebrow: { index: "02", label: "Selected work" },
   headline: "Case studies, not screenshots.",
-  subline: "I've worked on a variety of projects, from banking-grade systems to production AI.",
+  subline:
+    "I've worked on a variety of projects, from banking-grade systems to production AI.",
   linkLabel: "read case study →",
   cards: [
     {
@@ -167,10 +130,9 @@ export const work: SectionWithCards = {
   ] satisfies readonly WorkCard[],
 } as const;
 
-export const stack: SectionWithTags = {
+export const stack = {
+  // Spec 002 §4.5: header + wrapping tag line + footnote only, no headline/subline.
   eyebrow: { index: "03", label: "Stack" },
-  headline: "Grounded in spec 000 (Java/Spring systems + Python LLM engineering).",
-  subline: "Grounded in spec 000 (Java/Spring systems + Python LLM engineering).",
   tags: [
     "Java",
     "Spring",
@@ -185,19 +147,18 @@ export const stack: SectionWithTags = {
   footnote: "// tools change. The discipline doesn't.",
 } as const;
 
-export const contact: SectionWithCTA = {
+export const contact = {
   eyebrow: { index: "04", label: "Contact" },
   headline: "Let's talk.",
-  subline: "PLACEHOLDER — DRAFT: one line inviting recruiters/engineers to reach out.",
+  subline:
+    "PLACEHOLDER — DRAFT: one line inviting recruiters/engineers to reach out.",
   cta: { email: "Email me", linkedin: "LinkedIn", github: "GitHub", x: "X" },
   badge: "GET /contact → 200 OK",
 } as const;
 
-// External links — (spec 002 §8).
-export const links: SectionWithLinks = {
-  eyebrow: { index: "05", label: "Links" },
-  headline: "Let's talk.",
-  subline: "PLACEHOLDER — DRAFT: one line inviting recruiters/engineers to reach out.",
+// External links consumed by Contact (spec 002 §4.6, §8). Not a page section —
+// no eyebrow/headline of its own; that content belongs to `contact` above.
+export const links = {
   email: "hello@degiorgi.dev",
   linkedin: "https://www.linkedin.com/in/agustindegiorgi",
   github: "https://github.com/degiorgiagustin",
