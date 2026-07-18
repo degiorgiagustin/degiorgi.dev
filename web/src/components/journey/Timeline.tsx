@@ -6,9 +6,8 @@
 // the final state (rail filled, all nodes lit) with no listener.
 import { useEffect, useRef } from "react";
 import { journey } from "@/content/messages";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { PageSection } from "@/components/layout/PageSection";
-import { Reveal } from "@/components/layout/Reveal";
+import { SectionHead } from "@/components/layout/SectionHead";
 import { TimelineStep } from "@/components/journey/TimelineStep";
 
 export function Timeline() {
@@ -70,19 +69,12 @@ export function Timeline() {
       className="py-24 lg:grid lg:grid-cols-3 lg:gap-12"
     >
       {/* Desktop: sticky header column beside the timeline; mobile: on top. */}
-      <header className="mb-10 lg:sticky lg:top-24 lg:col-span-1 lg:mb-0 lg:self-start">
-        <Reveal>
-          <Eyebrow index={journey.eyebrow.index}>
-            {journey.eyebrow.label}
-          </Eyebrow>
-          <h2 className="text-text mt-2.5 text-2xl font-medium tracking-tight lg:text-3xl">
-            {journey.headline}
-          </h2>
-          <p className="leading-body text-text-2 mt-4 max-w-xs text-sm">
-            {journey.subline}
-          </p>
-        </Reveal>
-      </header>
+      <SectionHead
+        eyebrow={journey.eyebrow}
+        headline={journey.headline}
+        subline={journey.subline}
+        className="mb-10 lg:sticky lg:top-24 lg:col-span-1 lg:mb-0 lg:self-start"
+      />
 
       <ol className="relative lg:col-span-2">
         {/* Rail track + gold progress fill, centered on the node column. */}
