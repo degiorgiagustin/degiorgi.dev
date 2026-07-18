@@ -8,6 +8,8 @@
  * email, social URLs, CV). These are content blockers, not build blockers.
  */
 
+import type { IconSlug } from "@/components/stack/icons";
+
 export const site = {
   // Split so the TLD can render dimmed, per the prototype wordmark.
   wordmark: { name: "degiorgi", tld: ".dev" },
@@ -130,20 +132,72 @@ export const work = {
   ] satisfies readonly WorkCard[],
 } as const;
 
+export type StackTool = {
+  name: string;
+  icon?: IconSlug; // omitted = no known icon (spec 002 §4.5); label-only chip.
+};
+
 export const stack = {
-  // Spec 002 §4.5: header + wrapping tag line + footnote only, no headline/subline.
+  // Spec 002 §4.5: header + tools grouped by category + footnote, no headline/subline.
   eyebrow: { index: "03", label: "Stack" },
-  tags: [
-    "Java",
-    "Spring",
-    "TypeScript",
-    "Next.js",
-    "Python",
-    "LangGraph",
-    "PostgreSQL",
-    "Docker",
-    "AWS",
-  ],
+  categories: [
+    {
+      label: "languages",
+      tools: [
+        { name: "Java", icon: "openjdk" }, // Oracle's Java coffee-cup mark isn't available (trademark takedown); OpenJDK stands in.
+        { name: "Python", icon: "python" },
+        { name: "TypeScript", icon: "typescript" },
+      ],
+    },
+    {
+      label: "frameworks",
+      tools: [
+        { name: "Spring", icon: "spring" },
+        { name: "Next.js", icon: "nextdotjs" },
+        { name: "LangChain", icon: "langchain" },
+        { name: "LangGraph", icon: "langgraph" },
+        { name: "scikit-learn", icon: "scikitlearn" },
+      ],
+    },
+    {
+      label: "ai tools & models",
+      tools: [
+        { name: "Claude Code", icon: "claude" },
+        { name: "Gemini", icon: "googlegemini" },
+        { name: "Cursor", icon: "cursor" },
+        { name: "v0", icon: "v0" },
+        { name: "Ollama", icon: "ollama" },
+      ],
+    },
+    {
+      label: "data",
+      tools: [
+        { name: "PostgreSQL", icon: "postgresql" },
+        { name: "MySQL", icon: "mysql" },
+        { name: "Oracle SQL" },
+      ],
+    },
+    {
+      label: "infra & devops",
+      tools: [
+        { name: "Docker", icon: "docker" },
+        { name: "Kubernetes", icon: "kubernetes" },
+        { name: "OpenShift", icon: "redhatopenshift" },
+        { name: "GitLab", icon: "gitlab" },
+        { name: "GitHub", icon: "github" },
+        { name: "Apache Maven", icon: "apachemaven" },
+        { name: "Bruno", icon: "bruno" },
+      ],
+    },
+    {
+      label: "observability",
+      tools: [
+        { name: "Elastic", icon: "elastic" },
+        { name: "Kibana", icon: "kibana" },
+        { name: "Dynatrace", icon: "dynatrace" },
+      ],
+    },
+  ] satisfies readonly { label: string; tools: readonly StackTool[] }[],
   footnote: "// tools change. The discipline doesn't.",
 } as const;
 

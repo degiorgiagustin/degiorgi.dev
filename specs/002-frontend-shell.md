@@ -90,8 +90,15 @@ web/src/
    screenshots.") + 3 cards (Gastra / Banking at scale / degiorgi.dev), each
    with kind label, title, summary, "read case study →" affordance (stub links
    in Phase 1). Mobile: single column.
-5. **Stack**: header "03 · Stack" + wrapping tag line + mono footnote
-   ("// tools change. The discipline doesn't.").
+5. **Stack**: header "03 · Stack" + tools grouped by category + mono footnote
+   ("// tools change. The discipline doesn't."). Categories render as `//
+   category` mono comment labels (echoing the footnote's own comment syntax),
+   each followed by a wrapped row of icon+label chips. Icons are monochrome
+   (`currentColor`, never gold — accent discipline), vendored as local SVG
+   path data extracted once from a third-party icon set (no runtime icon
+   library dependency); tools without a known icon render label-only. Data
+   lives in `messages.ts` as `stack.categories: { label, tools: { name, icon?
+   } }[]`.
 6. **Contact** (`#contact`): gradient headline CTA, subline, actions (gold
    mailto button + ghost LinkedIn/GitHub/X), `GET /contact → 200 OK` badge.
    All URLs from `messages.ts`.
