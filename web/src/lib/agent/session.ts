@@ -24,9 +24,19 @@ export type AgentSessionState = {
   locked: boolean; // budget_exhausted seen — surfaces render the lockout state
 };
 
+// crypto.randomUUID is gated to secure contexts (https or localhost), so it
+// is undefined when device-testing over plain HTTP (LAN / Tailscale). Fall
+// back to getRandomValues — available in every context; the session only
+// needs an opaque unique token, not a spec-perfect UUID.
+function createSessionId(): string {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+}
+
 const initialState: AgentSessionState = {
-  // Node ≥20 and all evergreen browsers provide crypto.randomUUID.
-  sessionId: crypto.randomUUID(),
+  sessionId: createSessionId(),
   questionCount: 0,
   exchange: null,
   locked: false,
