@@ -1,1 +1,5 @@
+# Local setup notes (not for the public repo)
 SETUP.md
+
+# Claude Code local/personal settings (shared settings.json is tracked)
+.claude/settings.local.json

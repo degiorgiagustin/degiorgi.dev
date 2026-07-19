@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — spec 001 §2. Single source of truth.
+ * Raw values declared once here as :root custom properties; the @theme block
+ * below exposes them as Tailwind utilities. Components consume utilities or
+ * var(--token) only — never raw hex/rgba. See docs/adr/001.
+ */
+:root {
+  /* Color */
+  --bg: #0a0a0c;
+  --surface: rgba(255, 255, 255, 0.03);
+  --glass: rgba(16, 17, 20, 0.55);
+  --glass-solid: rgba(18, 19, 22, 0.92);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --text: #f2f3f5;
+  --text-2: #9a9fa8;
+  --text-3: #5c6168;
+  --gold: #e3b34c;
+  --gold-light: #f6d68a;
+  --gold-dim: rgba(227, 179, 76, 0.14);
+
+  /* Radius — spec 001 §2 (panels, buttons, pills, badges) */
+  --radius-panel: 14px;
+  --radius-button: 7px;
+  --radius-pill: 99px;
+  --radius-badge: 5px;
+
+  /* Elevation — spec 001 §2 */
+  --shadow-panel: 0 24px 60px -24px rgba(0, 0, 0, 0.85);
+  --shadow-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /* Gold glow — prototype timeline (rail fill / lit node) */
+  --shadow-glow-gold: 0 0 12px rgba(227, 179, 76, 0.4);
+  --shadow-glow-gold-strong: 0 0 12px rgba(227, 179, 76, 0.7);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-glass: var(--glass);
+  --color-glass-solid: var(--glass-solid);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dim: var(--gold-dim);
+
+  --radius-panel: var(--radius-panel);
+  --radius-button: var(--radius-button);
+  --radius-pill: var(--radius-pill);
+  --radius-badge: var(--radius-badge);
+
+  --shadow-panel: var(--shadow-panel);
+  --shadow-bevel: var(--shadow-bevel);
+  --shadow-glow-gold: var(--shadow-glow-gold);
+  --shadow-glow-gold-strong: var(--shadow-glow-gold-strong);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Letter-spacing — spec 001 typography */
+  --tracking-label: 0.14em; /* mono meta / eyebrows / nav links */
+  --tracking-display: -0.035em; /* display headline */
+
+  /* Motion defaults — spec 001 §4: hover transitions 180ms ease */
+  --default-transition-duration: 180ms;
+  --default-transition-timing-function: ease;
+
+  /* Type scale — spec 001 typography */
+  --text-display: clamp(38px, 6.4vw, 76px); /* fluid display headline (hero) */
+  --text-display-sm: clamp(
+    30px,
+    5vw,
+    54px
+  ); /* smaller gradient headline (contact CTA) */
+  --leading-display: 1.06;
+  --leading-body: 1.65;
+
+  /* Scroll-hint drift (spec 001 §4). Disabled under reduced motion. */
+  --animate-drift: drift 2.4s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/*
+ * Base layer. The near-black page background lives on <html> so the fixed
+ * background paint layers (.dot-field / .ambient-glow, z-0) render above it
+ * while page content (z-10) renders above them.
+ */
+html {
+  background: var(--bg);
+}
+
+body {
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Visible focus — gold ring per spec 001 §2 accent list. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/*
+ * Signature background — spec 001 §3. Two fixed, pointer-events-none paint
+ * layers. These are full-viewport custom paints (radial-gradient + mask), not
+ * reusable utility patterns, so their literal values from §3 live here in the
+ * stylesheet rather than as Tailwind arbitrary values in the component.
+ */
+.dot-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.055) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 90% 60% at 50% 18%,
+    #000 25%,
+    transparent 75%
+  );
+  mask-image: radial-gradient(
+    ellipse 90% 60% at 50% 18%,
+    #000 25%,
+    transparent 75%
+  );
+}
+
+.ambient-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 55% 40% at 50% 0%,
+    rgba(255, 255, 255, 0.055),
+    rgba(227, 179, 76, 0.045) 45%,
+    transparent 72%
+  );
+  filter: blur(12px);
+}
+
+/*
+ * Timeline progress fill height (spec 002 §4.3). Consumes the --fill custom
+ * property that Timeline sets at runtime; height:var can't be a Tailwind
+ * utility without an arbitrary value, so this one structural rule lives here.
+ */
+.timeline-fill {
+  height: var(--fill, 0);
+}
+
+/*
+ * Motion choreography — spec 001 §4, ported from the approved prototype.
+ * Global CSS classes (not per-component utilities) because they encode a
+ * cross-cutting animation language: `.stage` is the once-per-load staggered
+ * entrance (hero), `.rv` the scroll reveal toggled by the Reveal component.
+ * See docs/adr/003-motion-choreography-css-classes.md.
+ */
+.stage {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: stage-in 0.8s ease forwards;
+}
+
+/* Entrance stagger — prototype delays .1 / .2 / .32 / .46s. */
+.stage-2 {
+  animation-delay: 0.1s;
+}
+.stage-3 {
+  animation-delay: 0.2s;
+}
+.stage-4 {
+  animation-delay: 0.32s;
+}
+.stage-5 {
+  animation-delay: 0.46s;
+}
+
+@keyframes stage-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Scroll reveal — hidden until the Reveal component adds `.in` on intersect. */
+.rv {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Accessibility floor — spec 001 §4: reduced motion disables all motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Choreographed elements render in final state, never hidden. */
+  .stage,
+  .rv {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
