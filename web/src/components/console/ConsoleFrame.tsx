@@ -1,0 +1,112 @@
+import { useRef } from "react";
+import { agentConsole } from "@/content/messages";
+import { Chip } from "./Chip";
+
+/*
+ * Presentational console shell (spec 003 §2): label, glass panel, prompt
+ * line, chips. Shared by the live Console and the pre-hydration facsimile so
+ * both render a pixel-identical footprint — that's what makes the dynamic
+ * import swap zero-CLS (spec 003 §6). "Live" is inferred from the presence of
+ * onSubmit; without it every control renders inert (disabled) but unchanged
+ * visually.
+ */
+type ConsoleFrameProps = {
+  placeholder: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
+  onSubmit?: (question: string) => void;
+  busy?: boolean; // a question is streaming: submits ignored, input readonly
+  locked?: boolean; // session budget exhausted: console goes inert
+  children?: React.ReactNode; // answer area (live console only)
+};
+
+export function ConsoleFrame({
+  placeholder,
+  value = "",
+  onValueChange,
+  onSubmit,
+  busy = false,
+  locked = false,
+  children,
+}: ConsoleFrameProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const live = onSubmit !== undefined;
+  const inert = !live || locked;
+
+  // Specular border tracking: direct CSS-custom-property writes (--mx/--my,
+  // the sanctioned runtime-value exception) instead of React state, so
+  // pointer moves never trigger re-renders.
+  const trackPointer = (e: React.PointerEvent<HTMLDivElement>) => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    const box = panel.getBoundingClientRect();
+    panel.style.setProperty("--mx", `${e.clientX - box.left}px`);
+    panel.style.setProperty("--my", `${e.clientY - box.top}px`);
+  };
+
+  return (
+    <div className="w-full text-left">
+      {/* Terminal chrome (label, caret, controls) is UI, not content — none
+          of it is text-selectable; answers remain selectable. */}
+      <p className="tracking-label text-text-3 mb-2.5 flex items-center justify-center gap-2 font-mono text-xs uppercase select-none">
+        <span aria-hidden className="bg-gold rounded-pill size-1.5" />
+        {agentConsole.label}
+      </p>
+
+      <div
+        ref={panelRef}
+        onPointerMove={live ? trackPointer : undefined}
+        className="specular-host bg-glass border-line rounded-panel shadow-panel inset-shadow-bevel focus-within:border-line-strong relative border backdrop-blur-lg"
+      >
+        {live && <span aria-hidden className="specular" />}
+
+        <form
+          className="flex items-center gap-3 px-4 py-3.5"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!busy && value.trim()) onSubmit?.(value.trim());
+          }}
+        >
+          <span aria-hidden className="text-gold font-mono text-sm select-none">
+            ~ %
+          </span>
+          <input
+            type="text"
+            value={value}
+            onChange={
+              onValueChange
+                ? (event) => onValueChange(event.target.value)
+                : undefined
+            }
+            readOnly={busy || !live}
+            disabled={inert}
+            placeholder={placeholder}
+            aria-label={agentConsole.inputAriaLabel}
+            autoComplete="off"
+            className="text-text placeholder:text-text-3 caret-gold min-w-0 flex-1 bg-transparent font-mono text-sm outline-none placeholder:select-none"
+          />
+          <button
+            type="submit"
+            disabled={inert || busy}
+            className="rounded-button border-line bg-surface text-text-2 enabled:hover:border-gold/40 enabled:hover:bg-gold-dim enabled:hover:text-gold relative border px-3 py-1.5 font-mono text-xs whitespace-nowrap transition-colors select-none before:absolute before:inset-x-0 before:-inset-y-2"
+          >
+            {agentConsole.ask}
+          </button>
+        </form>
+
+        <div className="flex flex-wrap justify-center gap-2 px-4 pb-4">
+          {agentConsole.canned.map(({ chip }) => (
+            <Chip
+              key={chip}
+              label={chip}
+              disabled={inert || busy}
+              onClick={live ? () => onSubmit?.(chip) : undefined}
+            />
+          ))}
+        </div>
+
+        {children}
+      </div>
+    </div>
+  );
+}

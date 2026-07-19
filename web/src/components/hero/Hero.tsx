@@ -1,12 +1,12 @@
 import { hero } from "@/content/messages";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GradientHeadline } from "@/components/hero/GradientHeadline";
+import { HeroConsole } from "@/components/console/HeroConsole";
 
-// Hero — first viewport (spec 002 §4.2). Server component (no interactivity).
-// Layout is height-aware for short screens (e.g. iPhone SE, 375×667): the main
-// content centers in the space above a bottom-pinned scroll hint, and the
-// reserved console slot shrinks on small viewports so nothing overflows the
-// fold. pt-16 clears the fixed nav (h-14).
+// Hero — first viewport (spec 002 §4.2). Server component (no interactivity;
+// the console mounts through its own client island). Layout is height-aware
+// for short screens (e.g. iPhone SE, 375×667): the main content centers in
+// the space above a bottom-pinned scroll hint. pt-16 clears the fixed nav (h-14).
 export function Hero() {
   return (
     <section className="flex min-h-svh flex-col px-4 pt-16 pb-8 text-center">
@@ -26,17 +26,14 @@ export function Hero() {
         </p>
 
         {/*
-         * Reserved console slot (spec 002 §4.2 / spec 003). Empty in this shell;
-         * spec 003 mounts the interactive console here. The min-height reserves
-         * its footprint (limits CLS on mount) but scales down on short screens
-         * so it never pushes the scroll hint below the fold. Final sizing is
-         * revisited when 003 lands its own responsive console.
+         * Console (spec 003 §2). The wrapper id anchors the dock's
+         * IntersectionObserver (spec 003 §3); width per prototype
+         * min(640px, 100%). The facsimile inside the island reserves the
+         * exact final footprint, so no min-height is needed anymore.
          */}
-        <div
-          aria-hidden
-          data-console-slot
-          className="stage stage-4 min-h-32 w-full max-w-2xl sm:min-h-48 lg:min-h-56"
-        />
+        <div id="hero-console" className="stage stage-4 w-full max-w-160">
+          <HeroConsole />
+        </div>
       </div>
 
       {/* Scroll hint pinned to the bottom of the first viewport. */}

@@ -83,6 +83,13 @@
 
   /* Scroll-hint drift (spec 001 §4). Disabled under reduced motion. */
   --animate-drift: drift 2.4s ease-in-out infinite;
+
+  /* Console answer entrance (spec 003 §2, prototype `rise`). */
+  --animate-rise: rise 0.35s ease;
+
+  /* Glass top bevel as a composable inset shadow, so panels can stack it
+     with shadow-panel (spec 001 §2 pairs both on floating panels). */
+  --inset-shadow-bevel: var(--shadow-bevel);
 }
 
 @keyframes drift {
@@ -92,6 +99,13 @@
   }
   50% {
     transform: translateY(4px);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
 }
 
@@ -111,10 +125,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Visible focus — gold ring per spec 001 §2 accent list. */
-:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
+/*
+ * Visible focus — gold ring per spec 001 §2 accent list. Lives in @layer base
+ * so component utilities can override it: un-layered author CSS outranks all
+ * of Tailwind's layers, which would make opt-outs like the console input's
+ * `outline-none` (it has its own focus affordance) silently lose.
+ */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
 }
 
 /*
@@ -214,6 +235,43 @@ body {
 .rv.in {
   opacity: 1;
   transform: none;
+}
+
+/*
+ * Console specular border — spec 001 §4, the single sanctioned "wow"
+ * micro-interaction. A pointer-following radial gradient clipped to the 1px
+ * border: two stacked masks (content-box + full box) XOR away everything but
+ * the ring. Pointer position arrives as --mx/--my custom properties set from
+ * JS (the sanctioned runtime-value exception). The reveal is gated to
+ * hover-capable devices so touch keeps the static border (spec 001 §4).
+ */
+.specular {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(255, 255, 255, 0.35),
+    transparent 70%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+@media (hover: hover) {
+  .specular-host:hover .specular {
+    opacity: 1;
+  }
 }
 
 /* Accessibility floor — spec 001 §4: reduced motion disables all motion. */
