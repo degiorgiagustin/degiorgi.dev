@@ -1,6 +1,7 @@
 # Spec 002 — Frontend Shell & Page Structure
 
-Status: **Accepted (v3)** · Depends on: 000, 001 · Implements first.
+Status: **Accepted (v4) — shell complete, merged to `develop`** · Depends on:
+000, 001 · Implements first.
 Visual reference: `docs/design-reference/hero-prototype.html` (prototype v2,
 approved). Changelog v2: full-page structure (journey/work/stack/contact),
 simplified console, docked omni-bar (see spec 003), command palette moved to
@@ -11,13 +12,18 @@ console/dock is a reserved slot in this shell, its interactivity lives in spec
 CSS-first `@theme`); deployment/CI/SEO artifacts split into a separate later
 effort (§7, §9); review viewports aligned to 390/768/1440 (§3). See
 `docs/adr/001-token-architecture-tailwind-v4-css-first.md`.
+Changelog v4: shell implementation complete (all six page sections built and
+reviewed phase-by-phase). SEO/metadata and deployment (former §6-7) extracted
+to **spec 004** now that they can be tracked against the console/dock (spec
+003) landing too, instead of against a still-in-progress shell.
 
 ## 1. Goal
 
-A deployable Next.js application containing the complete single-page site:
-global layout, nav, background system, hero (with the console slot — spec 003),
-career journey timeline, work section, stack strip, contact section, and the
-deployment pipeline. Exit = site live on Vercel behind degiorgi.dev.
+The complete single-page site shell: global layout, nav, background system,
+hero (with the console slot — spec 003), career journey timeline, work
+section, stack strip, contact section — statically buildable and mobile-first.
+Exit = `npm run build` clean, all acceptance criteria in §7 met, merged to
+`develop`. Live deployment is spec 004's exit condition, not this spec's.
 
 ## 2. Project setup
 
@@ -118,48 +124,24 @@ Scroll reveals: fade-up via IntersectionObserver on section heads and cards.
 - Fonts via `next/font` (Geist, Geist Mono) with zero-CLS configuration.
 - No Motion/GSAP in this spec: CSS + IntersectionObserver + rAF only.
 
-## 6. SEO & metadata
-
-A **minimal** `metadata` export (title "Agustín De Giorgi — Software Engineer" +
-description) ships in `layout.tsx` from the start — it is intrinsic to the App
-Router scaffold. The remaining SEO artifacts are part of the deferred effort in
-§7:
-
-- Canonical URL, OG/Twitter card (static placeholder).
-- JSON-LD `Person` (name, jobTitle, sameAs from `messages.ts`).
-- `robots.txt` + `sitemap.xml`.
-
-## 7. Deployment (deferred — separate effort)
-
-The build phase produces a locally-buildable static shell (`npm run build`
-clean). The following are split into a dedicated deployment effort because they
-require owner credentials (Vercel account, domain) and are independent of the
-shell code:
-
-- Vercel project, root `web/`, production branch `main`, PR previews.
-- Custom domain degiorgi.dev + www redirect. Vercel Analytics.
-- GitHub Actions `ci.yml`: lint + build on PR (path-filtered `web/**`).
-- The SEO artifacts listed in §6 (excluding the minimal `metadata` export).
-
-## 8. Owner-provided data (blockers for content, not for build)
+## 6. Owner-provided data (blockers for content, not for build)
 
 `messages.ts` ships with clearly marked placeholders until the owner supplies:
 real timeline dates, email address, LinkedIn/GitHub/X URLs, CV file.
 
-## 9. Acceptance criteria
+## 7. Acceptance criteria
 
-Shell (this effort):
-
-- [ ] `npm run build` clean (static generation, no runtime server dependency).
-- [ ] 390px pass: no horizontal scroll, all targets ≥ 44px, contact reserves
+- [x] `npm run build` clean (static generation, no runtime server dependency).
+- [x] 390px pass: no horizontal scroll, all targets ≥ 44px, contact reserves
       dock clearance (safe-area), timeline readable, sections verified against
       prototype v2.
-- [ ] Timeline progress + node lighting work on scroll; reduced-motion renders
+- [x] Timeline progress + node lighting work on scroll; reduced-motion renders
       final state.
-- [ ] All interactivity keyboard-operable; AA contrast verified.
-- [ ] Zero copy strings hardcoded in components (grep-verified).
-- [ ] Console slot present as a fixed-height reserved container (interactivity
+- [x] All interactivity keyboard-operable; AA contrast verified.
+- [x] Zero copy strings hardcoded in components (grep-verified).
+- [x] Console slot present as a fixed-height reserved container (interactivity
       is spec 003).
 
-Deferred to the deployment effort (§7): reachable at degiorgi.dev; Lighthouse
-mobile ≥ 95/95/95/100 on `/`; initial JS ≤ 100 kB gzip (bundle report on PR).
+SEO/metadata (beyond the minimal `metadata` export), deployment, CI, and
+production performance budgets (Lighthouse, bundle size) are **spec 004**'s
+acceptance criteria, not this spec's — see `specs/004-deployment-and-seo.md`.
