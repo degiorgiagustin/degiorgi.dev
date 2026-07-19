@@ -206,8 +206,13 @@ export const contact = {
   headline: "Let's talk.",
   subline:
     "PLACEHOLDER — DRAFT: one line inviting recruiters/engineers to reach out.",
-  cta: { email: "Email me", linkedin: "LinkedIn", github: "GitHub", x: "X" },
-  badge: "GET /contact → 200 OK",
+  cta: {
+    email: "hello@degiorgi.dev",
+    linkedin: "LinkedIn",
+    github: "GitHub",
+    x: "X",
+  },
+  badge: { prefix: "GET /contact →", status: "200 OK" },
 } as const;
 
 // External links consumed by Contact (spec 002 §4.6, §8). Not a page section —

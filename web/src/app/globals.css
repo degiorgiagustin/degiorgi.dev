@@ -72,7 +72,12 @@
   --default-transition-timing-function: ease;
 
   /* Type scale — spec 001 typography */
-  --text-display: clamp(38px, 6.4vw, 76px); /* fluid display headline */
+  --text-display: clamp(38px, 6.4vw, 76px); /* fluid display headline (hero) */
+  --text-display-sm: clamp(
+    30px,
+    5vw,
+    54px
+  ); /* smaller gradient headline (contact CTA) */
   --leading-display: 1.06;
   --leading-body: 1.65;
 

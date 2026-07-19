@@ -43,7 +43,7 @@ web/src/
 │   ├── console/          # spec 003 (Console + Dock)
 │   ├── journey/          # Timeline, TimelineStep
 │   ├── work/             # WorkCard
-│   ├── contact/          # ContactSection, HttpStatusBadge
+│   ├── contact/          # Contact, HttpStatusBadge
 │   └── ui/               # Chip, Tag, StatusPill, Button
 ├── content/
 │   └── messages.ts       # ALL copy + timeline data + links (single source)

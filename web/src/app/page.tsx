@@ -1,3 +1,4 @@
+import { Contact } from "@/components/contact/Contact";
 import { Hero } from "@/components/hero/Hero";
 import { Timeline } from "@/components/journey/Timeline";
 import { Work } from "@/components/work/Work";
@@ -11,6 +12,7 @@ export default function Home() {
       <Timeline />
       <Work />
       <Stack />
+      <Contact />
     </main>
   );
 }
