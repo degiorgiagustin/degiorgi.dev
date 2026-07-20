@@ -15,6 +15,18 @@ const budget = JSON.parse(
   readFileSync(join(cwd, "bundle-budget.json"), "utf8"),
 );
 
+// Fail closed, not open: a NaN limit would make `total > limit` evaluate to
+// false and silently pass regardless of actual bundle size.
+if (
+  !Number.isFinite(budget.gzipBytes) ||
+  !Number.isFinite(budget.toleranceBytes)
+) {
+  console.error(
+    `bundle-budget.json is malformed: gzipBytes=${budget.gzipBytes}, toleranceBytes=${budget.toleranceBytes} (expected finite numbers).`,
+  );
+  process.exit(1);
+}
+
 const rows = manifest.rootMainFiles.map((file) => {
   const bytes = readFileSync(join(cwd, ".next", file));
   const gzipBytes = gzipSync(bytes, { level: 9 }).length;
