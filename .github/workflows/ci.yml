@@ -24,7 +24,15 @@ jobs:
           cache-dependency-path: web/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        # Not `npm ci`: @tailwindcss/oxide's WASM fallback (napi-rs/wasm-runtime)
+        # declares @emnapi/core and @emnapi/runtime as *optional* peer deps.
+        # `npm install` correctly resolves/skips them per-platform; `npm ci`'s
+        # stricter sync-check flags them as "missing" whenever the committed
+        # lockfile was generated on a different OS than the one running it —
+        # a known upstream issue (tailwindlabs/tailwindcss#20324,
+        # napi-rs/napi-rs#3174), not something fixable by regenerating the
+        # lockfile on any single platform.
+        run: npm install
 
       - name: Lint
         run: npm run lint
