@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint && prettier --check .",
     "format": "prettier --write .",
+    "check:bundle": "node scripts/check-bundle-budget.mjs",
     "prepare": "cd .. && husky web/.husky"
   },
   "dependencies": {
