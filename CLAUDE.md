@@ -53,9 +53,12 @@ docs/design-reference/hero-prototype.html   Approved visual reference (v2)
   breakpoints only add for larger screens (Tailwind's unprefixed = mobile
   convention — never write `max-width` overrides to "fix" mobile). Every
   feature is reviewed at 390px BEFORE desktop.
-- **Performance budget is a gate**: initial JS ≤ 100 kB gzip, LCP < 1.5 s on
-  mobile emulation (slow 4G), Lighthouse mobile ≥ 95 on every page. If a
-  feature can't fit the budget, flag it — don't ship it.
+- **Performance budget is a gate**: initial JS gzip size must not regress past
+  the baseline in `web/bundle-budget.json` without a deliberate, reviewed bump
+  to that file in the same PR (CI-enforced; see
+  `docs/adr/005-bundle-budget-regression-baseline.md`). LCP < 1.5 s on mobile
+  emulation (slow 4G), Lighthouse mobile ≥ 95 on every page. If a feature
+  can't fit the budget, flag it — don't ship it.
 - Touch: all interactive targets ≥ 44×44 px; no behavior may depend on hover
   (hover effects are desktop enhancements with a touch-safe default).
 - iOS specifics: use `svh` units (never `vh` for full-height), respect
@@ -92,14 +95,23 @@ docs/design-reference/hero-prototype.html   Approved visual reference (v2)
 
 ## Workflow
 
-1. Read the relevant spec fully before proposing anything.
-2. Plan first (phases + file list), implement after approval, one phase per commit.
-3. After implementing, self-review against the spec section by section:
-   CUMPLIDO / PARCIAL / PENDIENTE with file:line evidence — including the
-   mobile checklist at 390px.
-4. Architectural deviations become ADR drafts in `docs/adr/` (template:
-   Context / Decision / Consequences / Alternatives considered).
-5. Conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
+1. **Analysis** — read the relevant spec(s) fully before proposing anything.
+   Resolve contradictions/ambiguities at the source: when the plan uncovers spec
+   inconsistencies, update the spec first (the source of truth evolves), then
+   implement against it. Never silently deviate.
+2. **Plan** — phases + file list, implement after approval, one phase per commit.
+3. **Verify (gate, every phase)** — after implementing a phase, run
+   `npm run lint` and `npm run build` and show the raw output before continuing
+   to the next phase. A phase with a failing gate is not done.
+4. **Self-review (every phase)** — review against the spec section by section:
+   **COMPLETED / PARTIAL / PENDING** with `file:line` evidence, scope-aware
+   (mark later-phase items PENDING with the phase that delivers them). Include
+   the mobile checklist at 390px. Then summarize: implemented / pending /
+   decisions taken that are not in the spec.
+5. **ADR on deviation** — architectural decisions or deviations from these rules
+   become ADR drafts in `docs/adr/` (template: Context / Decision / Consequences
+   / Alternatives considered), referenced from the affected spec.
+6. Conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
 
 ## Commands
 

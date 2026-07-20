@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/pr-review-trigger.js\"",
+            "timeout": 15,
+            "statusMessage": "Checking for PR creation (review policy)"
+          }
+        ]
+      }
+    ]
+  }
+}
