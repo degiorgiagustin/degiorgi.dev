@@ -1,0 +1,4 @@
+# Force LF in working trees on every platform (overrides core.autocrlf), so
+# prettier --check (endOfLine: "lf" default) behaves identically everywhere.
+# `auto` lets git keep detecting binaries; text files normalize to LF.
+* text=auto eol=lf

@@ -30,7 +30,7 @@ variable and referenced from `@theme`. Components must never hardcode raw values
 | `--line-strong` | `rgba(255,255,255,0.14)` | Hover borders, emphasis rules |
 | `--text` | `#f2f3f5` | Primary text |
 | `--text-2` | `#9a9fa8` | Secondary text |
-| `--text-3` | `#5c6168` | Tertiary / labels / meta |
+| `--text-3` | `#767b83` | Tertiary / labels / meta |
 | `--gold` | `#e3b34c` | THE accent. Cursor, status dot, trace scores, one headline segment, focus rings |
 | `--gold-light` | `#f6d68a` | Light end of gold gradients (headline accent segment, per prototype) |
 | `--gold-dim` | `rgba(227,179,76,0.14)` | Gold-tinted fills (status pill, source chips) |
@@ -105,3 +105,6 @@ tokens only. All are styled mobile-first (base = 390px, breakpoints add).
       recognizes them as the same design.
 - [ ] Reduced-motion mode verified manually in devtools.
 - [ ] AA contrast verified for `--text-2` on `--bg` and gold on `--gold-dim`.
+- [x] AA contrast verified for `--text-3` on `--bg` (~4.64:1) — corrected from
+      the original `#5c6168` (~3.17:1, failed AA); see
+      `docs/adr/004-text-3-contrast-correction.md`.
