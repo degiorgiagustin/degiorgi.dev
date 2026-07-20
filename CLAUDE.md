@@ -53,9 +53,12 @@ docs/design-reference/hero-prototype.html   Approved visual reference (v2)
   breakpoints only add for larger screens (Tailwind's unprefixed = mobile
   convention — never write `max-width` overrides to "fix" mobile). Every
   feature is reviewed at 390px BEFORE desktop.
-- **Performance budget is a gate**: initial JS ≤ 100 kB gzip, LCP < 1.5 s on
-  mobile emulation (slow 4G), Lighthouse mobile ≥ 95 on every page. If a
-  feature can't fit the budget, flag it — don't ship it.
+- **Performance budget is a gate**: initial JS gzip size must not regress past
+  the baseline in `web/bundle-budget.json` without a deliberate, reviewed bump
+  to that file in the same PR (CI-enforced; see
+  `docs/adr/005-bundle-budget-regression-baseline.md`). LCP < 1.5 s on mobile
+  emulation (slow 4G), Lighthouse mobile ≥ 95 on every page. If a feature
+  can't fit the budget, flag it — don't ship it.
 - Touch: all interactive targets ≥ 44×44 px; no behavior may depend on hover
   (hover effects are desktop enhancements with a touch-safe default).
 - iOS specifics: use `svh` units (never `vh` for full-height), respect

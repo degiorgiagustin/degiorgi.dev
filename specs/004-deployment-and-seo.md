@@ -34,6 +34,9 @@ to the App Router scaffold and not worth deferring. Remaining here:
 
 - [ ] Reachable at degiorgi.dev.
 - [ ] Lighthouse mobile ≥ 95/95/95/100 on `/`.
-- [ ] Initial JS ≤ 100 kB gzip (bundle report on PR).
+- [ ] Initial JS gzip size does not regress past the reviewed baseline in
+      `web/bundle-budget.json` (bundle report posted on every PR; see
+      `docs/adr/005-bundle-budget-regression-baseline.md` for why this
+      replaced a fixed 100 kB ceiling that predated Next.js 16/React 19).
 - [ ] CI (`ci.yml`) green on PR: lint + build, path-filtered `web/**`.
 - [ ] JSON-LD `Person` validates; `robots.txt`/`sitemap.xml` reachable.

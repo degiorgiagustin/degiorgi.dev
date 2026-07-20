@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - "web/**"
+      - ".github/workflows/ci.yml"
+
+defaults:
+  run:
+    working-directory: web
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Lint & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        # Not `npm ci`: @tailwindcss/oxide's WASM fallback (napi-rs/wasm-runtime)
+        # declares @emnapi/core and @emnapi/runtime as *optional* peer deps.
+        # `npm install` correctly resolves/skips them per-platform; `npm ci`'s
+        # stricter sync-check flags them as "missing" whenever the committed
+        # lockfile was generated on a different OS than the one running it —
+        # a known upstream issue (tailwindlabs/tailwindcss#20324,
+        # napi-rs/napi-rs#3174), not something fixable by regenerating the
+        # lockfile on any single platform.
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Bundle budget report
+        run: npm run check:bundle

@@ -17,6 +17,19 @@ export const site = {
   status: "Open to senior roles",
 } as const;
 
+// SEO/metadata source of truth (spec 004 §2): page title/description, canonical
+// URL, and JSON-LD Person fields. `links` above supplies `sameAs`.
+export const seo = {
+  url: "https://degiorgi.dev",
+  title: "Agustín De Giorgi — Software Engineer",
+  description:
+    "Software engineer building banking-grade systems that move money and AI that shows its work.",
+  person: {
+    name: "Agustín De Giorgi",
+    jobTitle: "Software Engineer",
+  },
+} as const;
+
 export const nav = {
   links: [
     { label: "Journey", href: "#journey" },

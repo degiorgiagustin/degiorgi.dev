@@ -234,6 +234,35 @@ body {
   }
 }
 
+/*
+ * Scroll performance (docs/adr/006-scroll-rendering-cost.md). Neither rule
+ * changes anything visible — both change only when the browser bothers to
+ * do rendering work it was already going to do.
+ *
+ * content-visibility: auto skips style/layout/paint for a section entirely
+ * while it isn't near the viewport, instead of the browser tracking every
+ * section on every scroll frame regardless of what's on screen.
+ * contain-intrinsic-size gives it a placeholder height before first render
+ * so the page doesn't jump; the real measured height takes over after that.
+ */
+.section-cv {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/*
+ * The browser re-resolves :hover (and pays for the hit-testing that needs)
+ * on every scroll frame as content slides under a stationary cursor — this
+ * was the single largest rendering cost measured on the page. Hover can't
+ * meaningfully register mid-scroll anyway, so suspending it while actively
+ * scrolling (ScrollPointerGate.tsx toggles this class, 150ms settle) costs
+ * nothing perceptible. Scoped to <main>: Nav is a sibling, and the dock sets
+ * its own pointer-events explicitly, so neither is affected by this rule.
+ */
+body.is-scrolling main {
+  pointer-events: none;
+}
+
 /* Scroll reveal — hidden until the Reveal component adds `.in` on intersect. */
 .rv {
   opacity: 0;
