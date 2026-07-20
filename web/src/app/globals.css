@@ -90,6 +90,9 @@
   /* Glass top bevel as a composable inset shadow, so panels can stack it
      with shadow-panel (spec 001 §2 pairs both on floating panels). */
   --inset-shadow-bevel: var(--shadow-bevel);
+
+  /* Dock entrance curve (spec 003 §3). */
+  --ease-dock: cubic-bezier(0.32, 0.72, 0.28, 1);
 }
 
 @keyframes drift {
@@ -272,6 +275,37 @@ body {
   .specular-host:hover .specular {
     opacity: 1;
   }
+}
+
+/*
+ * Docked omni-bar geometry & entrance (spec 003 §3). Fixed bottom-center;
+ * width and bottom offset need min()/max() + safe-area env() (iOS home
+ * indicator), which can't derive from theme utilities — scoped class per the
+ * ADR-002 precedent. --kb-offset is set from JS while the mobile virtual
+ * keyboard occludes the bar (visualViewport tracking); 0 otherwise. Reduced
+ * motion: the global override below collapses the transition to an instant
+ * toggle, exactly as the spec asks.
+ */
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(
+    max(16px, env(safe-area-inset-bottom) + 8px) + var(--kb-offset, 0px)
+  );
+  z-index: 60;
+  width: min(560px, 100% - 32px);
+  transform: translate(-50%, 90px) scale(0.97);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.45s var(--ease-dock),
+    opacity 0.35s ease;
+}
+
+.dock.show {
+  transform: translate(-50%, 0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Accessibility floor — spec 001 §4: reduced motion disables all motion. */
