@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
@@ -50,6 +51,7 @@ export default function RootLayout({
         <div id="top" className="relative z-10 flex min-h-svh flex-col">
           {children}
         </div>
+        <Analytics />
       </body>
     </html>
   );
