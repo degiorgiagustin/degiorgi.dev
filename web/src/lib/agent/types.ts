@@ -28,7 +28,7 @@ export interface TraceMeta {
 export interface AgentAnswer {
   kind: "answer";
   text: string; // may arrive as a stream of deltas
-  sources: string[];
+  sources: string[]; // reserved: no console surface renders this yet
   trace: { chunks: TraceChunk[]; meta: TraceMeta };
 }
 

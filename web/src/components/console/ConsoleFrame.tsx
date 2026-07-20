@@ -61,7 +61,7 @@ export function ConsoleFrame({
       <div
         ref={panelRef}
         onPointerMove={live ? trackPointer : undefined}
-        className="specular-host bg-glass border-line rounded-panel shadow-panel inset-shadow-bevel focus-within:border-line-strong relative border backdrop-blur-lg"
+        className="specular-host bg-glass border-line rounded-panel shadow-panel inset-shadow-bevel focus-within:border-gold relative border backdrop-blur-lg"
       >
         {live && <span aria-hidden className="specular" />}
 

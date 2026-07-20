@@ -120,7 +120,7 @@ export function Dock() {
           event.preventDefault();
           submitQuestion();
         }}
-        className="bg-glass-solid border-line-strong rounded-pill shadow-panel inset-shadow-bevel flex items-center gap-3 border py-2 pr-2 pl-4 backdrop-blur-lg"
+        className="bg-glass-solid border-line-strong focus-within:border-gold rounded-pill shadow-panel inset-shadow-bevel flex items-center gap-3 border py-2 pr-2 pl-4"
       >
         <span aria-hidden className="text-gold font-mono text-xs select-none">
           ~ %
