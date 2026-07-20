@@ -35,7 +35,7 @@ export function AnswerBlock({ exchange, variant = "panel" }: AnswerBlockProps) {
   return (
     <div
       aria-live="polite"
-      className={`leading-body text-text-2 text-sm ${variantClass[variant]}`}
+      className={`leading-body text-text-2 text-sm wrap-anywhere ${variantClass[variant]}`}
     >
       <p className="text-text font-medium">{exchange.question}</p>
 

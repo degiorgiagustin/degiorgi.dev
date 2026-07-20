@@ -193,6 +193,14 @@ body {
 }
 
 /*
+ * Prompt auto-grow (spec 003 UX): consumes the --prompt-h custom property
+ * PromptInput sets at runtime — same pattern as .timeline-fill above.
+ */
+.prompt-grow {
+  height: var(--prompt-h, auto);
+}
+
+/*
  * Motion choreography — spec 001 §4, ported from the approved prototype.
  * Global CSS classes (not per-component utilities) because they encode a
  * cross-cutting animation language: `.stage` is the once-per-load staggered

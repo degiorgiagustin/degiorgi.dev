@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { agentConsole } from "@/content/messages";
 import { ConsoleButton } from "./ConsoleButton";
+import { PromptInput } from "./PromptInput";
 
 /*
  * Presentational console shell (spec 003 §2): label, glass panel, prompt
@@ -44,6 +45,10 @@ export function ConsoleFrame({
     panel.style.setProperty("--my", `${e.clientY - box.top}px`);
   };
 
+  const submitValue = () => {
+    if (!busy && value.trim()) onSubmit?.(value.trim());
+  };
+
   return (
     <div className="w-full text-left">
       {/* Terminal chrome (label, caret, controls) is UI, not content — none
@@ -64,26 +69,19 @@ export function ConsoleFrame({
           className="flex items-center gap-3 px-4 py-3.5"
           onSubmit={(event) => {
             event.preventDefault();
-            if (!busy && value.trim()) onSubmit?.(value.trim());
+            submitValue();
           }}
         >
           <span aria-hidden className="text-gold font-mono text-sm select-none">
             ~ %
           </span>
-          <input
-            type="text"
+          <PromptInput
             value={value}
-            onChange={
-              onValueChange
-                ? (event) => onValueChange(event.target.value)
-                : undefined
-            }
+            placeholder={placeholder}
+            onValueChange={onValueChange}
+            onSubmitRequest={live ? submitValue : undefined}
             readOnly={busy || !live}
             disabled={inert}
-            placeholder={placeholder}
-            aria-label={agentConsole.inputAriaLabel}
-            autoComplete="off"
-            className="text-text placeholder:text-text-3 caret-gold min-w-0 flex-1 bg-transparent font-mono text-sm outline-none placeholder:select-none"
           />
           <ConsoleButton
             variant="action"

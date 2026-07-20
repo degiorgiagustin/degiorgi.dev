@@ -3,6 +3,7 @@ import { agentConsole } from "@/content/messages";
 import { agentSession } from "@/lib/agent/session";
 import { AnswerBlock } from "./AnswerBlock";
 import { ConsoleButton } from "./ConsoleButton";
+import { PromptInput } from "./PromptInput";
 import { TextButton } from "./TextButton";
 
 /*
@@ -24,7 +25,7 @@ export function Dock() {
   const [value, setValue] = useState("");
   const dockRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const busy = session.exchange?.status === "streaming";
 
   // Appear/hide: the dock exists exactly while the hero console doesn't.
@@ -76,8 +77,7 @@ export function Dock() {
     inputRef.current?.focus();
   };
 
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const submitQuestion = () => {
     const question = value.trim();
     if (!question || busy) return;
     setValue("");
@@ -116,23 +116,23 @@ export function Dock() {
       )}
 
       <form
-        onSubmit={submit}
+        onSubmit={(event) => {
+          event.preventDefault();
+          submitQuestion();
+        }}
         className="bg-glass-solid border-line-strong rounded-pill shadow-panel inset-shadow-bevel flex items-center gap-3 border py-2 pr-2 pl-4 backdrop-blur-lg"
       >
         <span aria-hidden className="text-gold font-mono text-xs select-none">
           ~ %
         </span>
-        <input
+        <PromptInput
           ref={inputRef}
-          type="text"
           value={value}
-          onChange={(event) => setValue(event.target.value)}
+          placeholder={agentConsole.dock.placeholder}
+          onValueChange={setValue}
+          onSubmitRequest={submitQuestion}
           readOnly={busy}
           disabled={session.locked}
-          placeholder={agentConsole.dock.placeholder}
-          aria-label={agentConsole.inputAriaLabel}
-          autoComplete="off"
-          className="text-text placeholder:text-text-3 caret-gold min-w-0 flex-1 bg-transparent font-mono text-sm outline-none placeholder:select-none"
         />
         <ConsoleButton
           variant="solid"
