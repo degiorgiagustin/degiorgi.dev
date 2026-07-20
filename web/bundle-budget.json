@@ -1,0 +1,8 @@
+{
+  "gzipBytes": 131353,
+  "toleranceBytes": 2048,
+  "measuredAt": "2026-07-20",
+  "next": "16.2.10",
+  "react": "19.2.7",
+  "note": "See docs/adr/005-bundle-budget-regression-baseline.md. Bump gzipBytes deliberately in the same PR that grows the bundle; re-measure on next/react major version bumps."
+}
