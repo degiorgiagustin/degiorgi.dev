@@ -5,6 +5,7 @@ import "./globals.css";
 import { DotField } from "@/components/layout/DotField";
 import { AmbientGlow } from "@/components/layout/AmbientGlow";
 import { Nav } from "@/components/layout/Nav";
+import { ScrollPointerGate } from "@/components/layout/ScrollPointerGate";
 
 // Minimal metadata (spec 002 §6). Remaining SEO artifacts are the deferred
 // deployment effort (§7).
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body>
+        <ScrollPointerGate />
         {/* Fixed background paint (z-0), behind content. */}
         <DotField />
         <AmbientGlow />

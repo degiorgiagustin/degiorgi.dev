@@ -34,7 +34,12 @@ export function Timeline() {
     const update = () => {
       frame = 0;
       const threshold = window.innerHeight * 0.55; // spec 002 §4.3
+      // All reads before any write: interleaving them (as the previous
+      // version did, one getBoundingClientRect() per step right before its
+      // own setAttribute()) forces the browser to flush layout on every
+      // iteration instead of once per frame.
       const railBox = rail.getBoundingClientRect();
+      const stepTops = steps.map((step) => step.getBoundingClientRect().top);
       const filled = Math.min(
         Math.max(threshold - railBox.top, 0),
         railBox.height,
@@ -42,10 +47,10 @@ export function Timeline() {
       // Dynamic runtime value passed as a CSS custom property (sanctioned
       // exception to the no-inline-style rule); consumed by .timeline-fill.
       fill.style.setProperty("--fill", `${filled}px`);
-      steps.forEach((step) => {
+      steps.forEach((step, i) => {
         step.setAttribute(
           "data-lit",
-          step.getBoundingClientRect().top <= threshold ? "true" : "false",
+          stepTops[i] <= threshold ? "true" : "false",
         );
       });
     };
@@ -53,10 +58,33 @@ export function Timeline() {
       if (!frame) frame = requestAnimationFrame(update);
     };
 
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    // Only track scroll while the timeline is near the viewport — this
+    // listener previously ran globally, paying for a getBoundingClientRect()
+    // per step on every scroll frame anywhere on the page, including while
+    // scrolling through unrelated sections.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          update();
+          window.addEventListener("scroll", onScroll, { passive: true });
+          window.addEventListener("resize", onScroll);
+        } else {
+          window.removeEventListener("scroll", onScroll);
+          window.removeEventListener("resize", onScroll);
+          if (frame) cancelAnimationFrame(frame);
+          frame = 0;
+        }
+      },
+      // Pre-warm 200px before the rail enters from below (avoids a visible
+      // pop on first paint), but detach the instant it exits at the top —
+      // symmetric margins here left the listener attached ~200px into the
+      // next section (Work), overlapping that section's own scroll cost.
+      { rootMargin: "0px 0px 200px 0px" },
+    );
+    observer.observe(rail);
+
     return () => {
+      observer.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (frame) cancelAnimationFrame(frame);
