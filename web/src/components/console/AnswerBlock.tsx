@@ -1,20 +1,29 @@
 import { useState } from "react";
 import { agentConsole, contact, links } from "@/content/messages";
 import type { AgentExchange } from "@/lib/agent/session";
+import { TextButton } from "./TextButton";
 import { TraceDetail } from "./TraceDetail";
 
 /*
  * One question/answer exchange (spec 003 §2): streamed text, then the mono
  * footer (totalMs · chunks + trace disclosure). Shared by the hero console
- * and the dock answer card (spec 003 §3, same footer/trace pattern).
+ * and the dock answer card (spec 003 §3, same footer/trace pattern) — the
+ * variant only adjusts framing: "panel" separates itself from the console
+ * above it, "card" lets the dock card own padding and entrance animation.
  * aria-live="polite" announces the streamed answer without interrupting.
  * Mount it keyed by question count so disclosure state resets per question.
  */
 type AnswerBlockProps = {
   exchange: AgentExchange;
+  variant?: "panel" | "card";
 };
 
-export function AnswerBlock({ exchange }: AnswerBlockProps) {
+const variantClass: Record<NonNullable<AnswerBlockProps["variant"]>, string> = {
+  panel: "border-line animate-rise border-t px-4 py-4",
+  card: "",
+};
+
+export function AnswerBlock({ exchange, variant = "panel" }: AnswerBlockProps) {
   const [traceOpen, setTraceOpen] = useState(false);
 
   const settled = exchange.status === "settled";
@@ -26,7 +35,7 @@ export function AnswerBlock({ exchange }: AnswerBlockProps) {
   return (
     <div
       aria-live="polite"
-      className="border-line animate-rise leading-body text-text-2 border-t px-4 py-4 text-sm"
+      className={`leading-body text-text-2 text-sm ${variantClass[variant]}`}
     >
       <p className="text-text font-medium">{exchange.question}</p>
 
@@ -69,16 +78,14 @@ export function AnswerBlock({ exchange }: AnswerBlockProps) {
                 )}
               </span>
             )}
-            <button
-              type="button"
-              aria-expanded={traceOpen}
+            <TextButton
+              expanded={traceOpen}
               onClick={() => setTraceOpen((open) => !open)}
-              className="text-gold relative before:absolute before:inset-x-0 before:-inset-y-3"
             >
               {traceOpen
                 ? agentConsole.footer.hideTrace
                 : agentConsole.footer.showTrace}
-            </button>
+            </TextButton>
           </div>
           {traceOpen && <TraceDetail trace={trace} />}
         </>

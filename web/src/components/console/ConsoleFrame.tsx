@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { agentConsole } from "@/content/messages";
-import { Chip } from "./Chip";
+import { ConsoleButton } from "./ConsoleButton";
 
 /*
  * Presentational console shell (spec 003 §2): label, glass panel, prompt
@@ -85,23 +85,25 @@ export function ConsoleFrame({
             autoComplete="off"
             className="text-text placeholder:text-text-3 caret-gold min-w-0 flex-1 bg-transparent font-mono text-sm outline-none placeholder:select-none"
           />
-          <button
+          <ConsoleButton
+            variant="action"
             type="submit"
             disabled={inert || busy}
-            className="rounded-button border-line bg-surface text-text-2 enabled:hover:border-gold/40 enabled:hover:bg-gold-dim enabled:hover:text-gold relative border px-3 py-1.5 font-mono text-xs whitespace-nowrap transition-colors select-none before:absolute before:inset-x-0 before:-inset-y-2"
           >
             {agentConsole.ask}
-          </button>
+          </ConsoleButton>
         </form>
 
         <div className="flex flex-wrap justify-center gap-2 px-4 pb-4">
           {agentConsole.canned.map(({ chip }) => (
-            <Chip
+            <ConsoleButton
               key={chip}
-              label={chip}
+              variant="chip"
               disabled={inert || busy}
               onClick={live ? () => onSubmit?.(chip) : undefined}
-            />
+            >
+              {chip}
+            </ConsoleButton>
           ))}
         </div>
 
