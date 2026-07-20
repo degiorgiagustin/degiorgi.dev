@@ -1,11 +1,15 @@
 import type { NextConfig } from "next";
 
+// Dev-only: `next dev` rejects cross-origin HMR/asset requests unless the
+// origin is allowlisted. Personal hostnames stay out of this public repo —
+// put yours in web/.env.local (gitignored):
+//   ALLOWED_DEV_ORIGIN=my-machine.my-tailnet.ts.net
+// The *.ts.net wildcard stays as a generic fallback; ts.net addresses are
+// only reachable from inside the tailnet anyway.
+const devOrigin = process.env.ALLOWED_DEV_ORIGIN;
+
 const nextConfig: NextConfig = {
-  // Dev-only: lets `next dev` accept cross-origin HMR/asset requests when the
-  // server is reached over a tailnet hostname (remote/mobile device testing).
-  // Wildcard on purpose — ts.net addresses are only reachable from inside the
-  // tailnet, and specific hostnames don't belong in a public repo.
-  allowedDevOrigins: ["*.ts.net"],
+  allowedDevOrigins: [...(devOrigin ? [devOrigin] : []), "*.ts.net"],
 };
 
 export default nextConfig;
