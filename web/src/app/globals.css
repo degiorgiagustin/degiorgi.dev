@@ -365,6 +365,19 @@ body.is-scrolling main {
   pointer-events: auto;
 }
 
+/*
+ * Floating nav width (spec 002 §4.1). Same ADR-002 justification as .dock
+ * above: a min()-capped width isn't expressible as a Tailwind utility
+ * without an arbitrary value. Centering itself (left-1/2 + -translate-x-1/2)
+ * is a constant Tailwind utility shared by both nav states (Nav.tsx) — only
+ * width and top actually change between them, which is what keeps the
+ * transition a clean symmetric contraction with no lateral drift.
+ */
+.nav-float {
+  top: 12px;
+  width: min(720px, 100% - 32px);
+}
+
 /* Accessibility floor — spec 001 §4: reduced motion disables all motion. */
 @media (prefers-reduced-motion: reduce) {
   *,

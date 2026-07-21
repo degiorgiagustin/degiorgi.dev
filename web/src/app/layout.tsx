@@ -49,6 +49,11 @@ export default function RootLayout({
         <Nav />
         {/* Content sits above the background layers. #top anchors the wordmark. */}
         <div id="top" className="relative z-10 flex min-h-svh flex-col">
+          {/* Nav's scroll-detach sentinel (spec 002 §4.1): a zero-visual
+              marker at the very top of scrollable content. Nav observes it
+              via IntersectionObserver, same pattern Dock uses for
+              #hero-console — no raw scroll-position polling. */}
+          <div id="nav-sentinel" aria-hidden className="h-px w-full" />
           {children}
         </div>
         <Analytics />
