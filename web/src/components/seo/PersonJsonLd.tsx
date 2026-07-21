@@ -1,16 +1,17 @@
 import { links, seo } from "@/content/messages";
+import { t, type Locale } from "@/lib/i18n/locale";
 
 // Server component: renders as static inline HTML, zero client JS cost.
 // dangerouslySetInnerHTML is the standard Next.js pattern for JSON-LD — the
 // payload is fully static site content, never user input.
-export function PersonJsonLd() {
+export function PersonJsonLd({ locale }: { locale: Locale }) {
   const json = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: seo.person.name,
-    jobTitle: seo.person.jobTitle,
+    jobTitle: t(seo.person.jobTitle, locale),
     url: seo.url,
-    sameAs: [links.linkedin, links.github, links.x],
+    sameAs: [t(links.linkedin, locale), links.github, links.x],
   };
 
   return (

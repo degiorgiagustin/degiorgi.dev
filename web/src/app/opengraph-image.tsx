@@ -9,8 +9,12 @@ import { site, seo, hero } from "@/content/messages";
 // globals.css, so CSS custom properties and Tailwind classes are inert here.
 // The hex values below are the current spec 001 §2 token values, copied
 // deliberately — keep them in sync by hand if those tokens change.
+// English-only for now (spec 006 Phase 1): this file convention runs as an
+// isolated route handler outside LocaleLayout, so there's no reliable
+// per-request locale to resolve here. A /es/opengraph-image.tsx (Phase 2)
+// would need its own copy once real Spanish content exists.
 export const runtime = "nodejs";
-export const alt = seo.title;
+export const alt = seo.title.en;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -72,7 +76,7 @@ export default async function OpengraphImage() {
           marginTop: 12,
         }}
       >
-        {seo.person.jobTitle}
+        {seo.person.jobTitle.en}
       </div>
       <div
         style={{
@@ -84,7 +88,7 @@ export default async function OpengraphImage() {
           maxWidth: 880,
         }}
       >
-        {hero.headline.lead} {hero.headline.accent}
+        {hero.headline.lead.en} {hero.headline.accent.en}
       </div>
     </div>,
     {

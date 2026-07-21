@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { agentConsole } from "@/content/messages";
+import { t, type Locale } from "@/lib/i18n/locale";
 import { ConsoleButton } from "./ConsoleButton";
 import { PromptInput } from "./PromptInput";
 
@@ -12,6 +13,7 @@ import { PromptInput } from "./PromptInput";
  * visually.
  */
 type ConsoleFrameProps = {
+  locale: Locale;
   placeholder: string;
   value?: string;
   onValueChange?: (value: string) => void;
@@ -22,6 +24,7 @@ type ConsoleFrameProps = {
 };
 
 export function ConsoleFrame({
+  locale,
   placeholder,
   value = "",
   onValueChange,
@@ -55,7 +58,7 @@ export function ConsoleFrame({
           of it is text-selectable; answers remain selectable. */}
       <p className="tracking-label text-text-3 mb-2.5 flex items-center justify-center gap-2 font-mono text-xs uppercase select-none">
         <span aria-hidden className="bg-gold rounded-pill size-1.5" />
-        {agentConsole.label}
+        {t(agentConsole.label, locale)}
       </p>
 
       <div
@@ -76,6 +79,7 @@ export function ConsoleFrame({
             ~ %
           </span>
           <PromptInput
+            ariaLabel={t(agentConsole.inputAriaLabel, locale)}
             value={value}
             placeholder={placeholder}
             onValueChange={onValueChange}
@@ -88,19 +92,19 @@ export function ConsoleFrame({
             type="submit"
             disabled={inert || busy}
           >
-            {agentConsole.ask}
+            {t(agentConsole.ask, locale)}
           </ConsoleButton>
         </form>
 
         <div className="flex flex-wrap justify-center gap-2 px-4 pb-4">
           {agentConsole.canned.map(({ chip }) => (
             <ConsoleButton
-              key={chip}
+              key={chip.en}
               variant="chip"
               disabled={inert || busy}
-              onClick={live ? () => onSubmit?.(chip) : undefined}
+              onClick={live ? () => onSubmit?.(t(chip, locale)) : undefined}
             >
-              {chip}
+              {t(chip, locale)}
             </ConsoleButton>
           ))}
         </div>

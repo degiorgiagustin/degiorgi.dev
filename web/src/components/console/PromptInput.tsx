@@ -1,5 +1,4 @@
 import { useImperativeHandle, useLayoutEffect, useRef } from "react";
-import { agentConsole } from "@/content/messages";
 
 /*
  * Auto-growing prompt field shared by the hero console and the dock. A
@@ -12,8 +11,12 @@ import { agentConsole } from "@/content/messages";
  * for any input/textarea with font-size under 16px — text-base is exactly
  * 16px, the smallest size that avoids it. Reverts to text-sm at sm: and up,
  * where that behavior doesn't apply.
+ * ariaLabel is a plain string, not Locale/t (spec 006): ConsoleFrame
+ * resolves it once and passes it down — this leaf doesn't need to know
+ * locale exists.
  */
 type PromptInputProps = {
+  ariaLabel: string;
   value: string;
   placeholder: string;
   onValueChange?: (value: string) => void;
@@ -24,6 +27,7 @@ type PromptInputProps = {
 };
 
 export function PromptInput({
+  ariaLabel,
   value,
   placeholder,
   onValueChange,
@@ -67,7 +71,7 @@ export function PromptInput({
       readOnly={readOnly}
       disabled={disabled}
       placeholder={placeholder}
-      aria-label={agentConsole.inputAriaLabel}
+      aria-label={ariaLabel}
       autoComplete="off"
       className="prompt-grow text-text placeholder:text-text-3 caret-gold max-h-40 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent font-mono text-base outline-none placeholder:select-none sm:text-sm"
     />
