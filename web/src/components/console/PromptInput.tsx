@@ -8,6 +8,10 @@ import { agentConsole } from "@/content/messages";
  * horizontally. Enter submits, Shift+Enter inserts a newline. Height tracks
  * content through the --prompt-h custom property (runtime-value exception)
  * consumed by .prompt-grow, capped by max-h-40, scrolling beyond.
+ * text-base (not text-sm) below sm: iOS Safari auto-zooms the page on focus
+ * for any input/textarea with font-size under 16px — text-base is exactly
+ * 16px, the smallest size that avoids it. Reverts to text-sm at sm: and up,
+ * where that behavior doesn't apply.
  */
 type PromptInputProps = {
   value: string;
@@ -65,7 +69,7 @@ export function PromptInput({
       placeholder={placeholder}
       aria-label={agentConsole.inputAriaLabel}
       autoComplete="off"
-      className="prompt-grow text-text placeholder:text-text-3 caret-gold max-h-40 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent font-mono text-sm outline-none placeholder:select-none"
+      className="prompt-grow text-text placeholder:text-text-3 caret-gold max-h-40 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent font-mono text-base outline-none placeholder:select-none sm:text-sm"
     />
   );
 }

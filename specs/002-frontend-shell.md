@@ -79,12 +79,38 @@ web/src/
 
 ## 4. Page sections (top to bottom)
 
-1. **Nav** (fixed, glass): three zones per the prototype — wordmark (mono,
-   dimmed TLD) left, anchor links Journey / Work / Contact **centered** (plain
-   sans, not mono), status pill (role · focus, e.g. "Tech Lead · Fintech &
-   AI" — see spec 005 for why this avoids "open to work" framing) right.
-   Mobile: wordmark
-   + status dot only (links live as in-page anchors; no hamburger in Phase 1).
+1. **Nav** (fixed, glass, detaches on scroll): three zones per the prototype —
+   wordmark (mono, dimmed TLD) left, anchor links Journey / Work / Contact
+   **centered** (plain sans, not mono), status pill (role · focus, e.g. "Tech
+   Lead · Fintech & AI" — see spec 005 for why this avoids "open to work"
+   framing) right. Mobile: wordmark + status dot only (links live as in-page
+   anchors; no hamburger in Phase 1).
+
+   **Scroll behavior**: at rest (top of page), Nav is the full-width flush
+   bar described above — `top-0`, straight edges, `border-b`, `bg-bg/60`,
+   56px tall. Past ~24px of scroll it detaches into a centered, genuinely
+   glass floating pill (`bg-glass` + `backdrop-blur-lg` + `inset-shadow-bevel`,
+   the same recipe as the console/dock panels, not the near-opaque
+   `bg-glass-solid` fallback) — `min(720px, 100% - 32px)` wide
+   (`.nav-float` in `globals.css`, same ADR-002-style scoped exception as
+   `.dock`'s geometry), rounded, `shadow-panel`, 12px down from the top,
+   48px tall. Both states share one constant centering mechanism
+   (`left-1/2` + `-translate-x-1/2`, applied unconditionally) so only width
+   and top actually animate between them — deliberately, so the transition
+   is a symmetric contraction toward a fixed center point with no lateral
+   drift, not two different positioning models (edge-anchored vs.
+   center-anchored) fighting each other mid-transition. Content is
+   identical in both states; only the container morphs, over 300ms.
+   Detected via `IntersectionObserver` on a `#nav-sentinel` marker at the
+   top of the page with a *positive* `rootMargin` (a real buffer before
+   triggering — a negative margin here reads the sentinel as already
+   scrolled past at page load, skipping the resting state entirely) — the
+   same observer pattern the Dock already uses for `#hero-console`, not raw
+   scroll-position polling (ADR 006's lesson: prefer `IntersectionObserver`
+   over per-frame reads).
+   `Nav` is a client component for this reason; the transition collapses to
+   an instant toggle under `prefers-reduced-motion` via the existing global
+   rule (spec 001 §4), no extra handling needed.
 2. **Hero** (min-height 100svh, centered): eyebrow → gradient headline
    ("Systems that move money. / AI that shows its work.", second line gold) →
    subline → **console slot** → scroll hint anchoring to #journey. This shell
