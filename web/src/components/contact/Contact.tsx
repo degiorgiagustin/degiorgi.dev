@@ -1,10 +1,10 @@
-import { contact, links } from "@/content/messages";
+import { contact } from "@/content/messages";
 import { GradientHeadline } from "@/components/hero/GradientHeadline";
 import { PageSection } from "@/components/layout/PageSection";
 import { Reveal } from "@/components/layout/Reveal";
+import { ContactActions } from "@/components/contact/ContactActions";
 import { HttpStatusBadge } from "@/components/contact/HttpStatusBadge";
-import { Icon } from "@/components/stack/Icon";
-import { Button } from "@/components/ui/Button";
+import { ScrollEndTracker } from "@/components/contact/ScrollEndTracker";
 
 // Closing CTA (spec 002 §4.6). Deliberately not built on SectionHead: this is
 // a gradient-headline call to action like Hero, not a plain section header.
@@ -25,36 +25,20 @@ export function Contact() {
         </p>
       </Reveal>
 
+      {/* One visual pill, two click zones: the email text opens a mail app,
+          the icon copies. Hand-built rather than Button + CopyButton side by
+          side, which read as two unrelated controls. Tracking lives in the
+          client island below (ContactActions), not here — this section is
+          otherwise a Server Component. */}
       <Reveal className="mt-9 flex flex-wrap items-center justify-center gap-3">
-        <Button href={`mailto:${links.email}`} variant="gold">
-          {contact.cta.email}
-        </Button>
-        <Button
-          href={links.linkedin}
-          variant="ghost"
-          external
-          icon={<Icon slug="linkedin" className="size-4" />}
-          label={contact.cta.linkedin}
-        />
-        <Button
-          href={links.github}
-          variant="ghost"
-          external
-          icon={<Icon slug="github" className="size-4" />}
-          label={contact.cta.github}
-        />
-        <Button
-          href={links.x}
-          variant="ghost"
-          external
-          icon={<Icon slug="x" className="size-4" />}
-          label={contact.cta.x}
-        />
+        <ContactActions />
       </Reveal>
 
       <Reveal className="mt-8 inline-block">
         <HttpStatusBadge />
       </Reveal>
+
+      <ScrollEndTracker />
     </PageSection>
   );
 }

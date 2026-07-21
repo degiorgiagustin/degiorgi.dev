@@ -31,7 +31,7 @@ variable and referenced from `@theme`. Components must never hardcode raw values
 | `--text` | `#f2f3f5` | Primary text |
 | `--text-2` | `#9a9fa8` | Secondary text |
 | `--text-3` | `#767b83` | Tertiary / labels / meta |
-| `--gold` | `#e3b34c` | THE accent. Cursor, status dot, trace scores, one headline segment, focus rings |
+| `--gold` | `#e3b34c` | THE accent. Cursor, status dot, trace scores, one headline segment, focus rings, text selection (`::selection`, spec 005) |
 | `--gold-light` | `#f6d68a` | Light end of gold gradients (headline accent segment, per prototype) |
 | `--gold-dim` | `rgba(227,179,76,0.14)` | Gold-tinted fills (status pill, source chips) |
 

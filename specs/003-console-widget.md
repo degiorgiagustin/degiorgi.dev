@@ -118,6 +118,30 @@ Session cap: after N questions (default 10) the adapter returns
 email/LinkedIn. Client-enforced by the mock in Phase 1; server-enforced in
 Phase 3 with identical client copy.
 
+Revised spec 005: this hand-off row isn't exclusive to `budget_exhausted`
+anymore. It also renders for `unavailable` and for the mock's own free-text
+`generic` fallback, since all three end the exchange by pointing the user at
+direct human contact instead of embedding the email as inert prose inside
+the answer text. The email is a real `mailto:` link plus an adjacent
+`CopyButton` (`components/ui/CopyButton.tsx`), not a link whose click
+behavior got silently swapped to copy-only. LinkedIn/GitHub/X render as
+borderless icon links (`components/ui/IconLink.tsx`) instead of the plain
+text word "LinkedIn" — same monochrome `Icon` component Stack uses, sized to
+the 44px touch floor but without Button's bordered ghost treatment (too
+heavy for this compact inline row).
+
+Which responses trigger the hand-off is adapter-driven: `AgentAnswer` and
+`AgentRejection` both carry an optional `showContact?: boolean`
+(`lib/agent/types.ts`), set by `MockAgentAdapter` on `budget_exhausted`,
+`unavailable`, and the generic free-text fallback. The UI reads that flag
+directly rather than inferring it from `response.text` — text is free-form
+copy the real Phase 3 backend won't reproduce verbatim, so a text-equality
+check would have silently stopped working the moment the mock was swapped
+out. The `AnswerBlock` accessibility region also narrowed: only the
+streamed question/answer text is `aria-live="polite"`; the contact row and
+trace footer render outside it so settling doesn't dump a growing set of
+focusable controls into a live region on every answer.
+
 ## 6. States & accessibility
 
 - Idle → typing → submitted (input disabled, subtle activity indicator) →

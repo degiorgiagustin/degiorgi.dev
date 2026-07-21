@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { track } from "@vercel/analytics";
 import { agentConsole } from "@/content/messages";
 import { agentSession } from "@/lib/agent/session";
 import { AnswerBlock } from "./AnswerBlock";
@@ -82,6 +83,7 @@ export function Dock() {
     if (!question || busy) return;
     setValue("");
     setCardOpen(true); // new question replaces the previous card content
+    track("agent_ask", { surface: "dock" });
     void agentSession.ask(question);
   };
 
@@ -111,6 +113,7 @@ export function Dock() {
             key={session.questionCount}
             exchange={session.exchange}
             variant="card"
+            surface="dock"
           />
         </div>
       )}

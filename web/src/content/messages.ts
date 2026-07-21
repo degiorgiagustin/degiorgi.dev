@@ -4,8 +4,8 @@
  * English (recruiter-facing); the grouped-export shape keeps a future EN/ES
  * toggle a matter of swapping this module.
  *
- * PLACEHOLDER marks owner-provided data still pending (real timeline dates,
- * email, social URLs, CV). These are content blockers, not build blockers.
+ * No PLACEHOLDER strings remain. See spec 005 for how this content was
+ * sourced and verified.
  */
 
 import type { IconSlug } from "@/components/stack/icons";
@@ -14,14 +14,14 @@ import type { TraceChunk, TraceMeta } from "@/lib/agent/types";
 export const site = {
   // Split so the TLD can render dimmed, per the prototype wordmark.
   wordmark: { name: "degiorgi", tld: ".dev" },
-  status: "Open to senior roles",
+  status: "Tech Lead · Fintech & AI",
 } as const;
 
 // SEO/metadata source of truth (spec 004 §2): page title/description, canonical
 // URL, and JSON-LD Person fields. `links` above supplies `sameAs`.
 export const seo = {
   url: "https://degiorgi.dev",
-  title: "Agustín De Giorgi — Software Engineer",
+  title: "Agustín De Giorgi - Software Engineer",
   description:
     "Software engineer building banking-grade systems that move money and AI that shows its work.",
   person: {
@@ -58,7 +58,7 @@ export type CannedAnswer = {
 };
 
 export const agentConsole = {
-  label: "ask my agent — it answers from my real work",
+  label: "ask my agent: it answers from my real work",
   inputAriaLabel: "Ask about my work",
   ask: "ask ↵",
   // Cycling typed placeholder (spec 003 §2); reduced motion pins the first.
@@ -99,7 +99,7 @@ export const agentConsole = {
     {
       chip: "What have you built?",
       answer: {
-        text: "Banking-grade platforms and production AI. The short list: retail-banking systems in Java/Spring that move real money at scale, Gastra — an AI product I'm writing up as a case study — and this site, a static Next.js shell with a RAG agent over my actual work. The Selected work section below has the full write-ups.",
+        text: "Banking-grade platforms and production AI. The short list: retail-banking systems in Java/Spring that move real money at scale, Gastra (an AI product I'm writing up as a case study), and this site, a static Next.js shell with a RAG agent over my actual work. The Selected work section below has the full write-ups.",
         sources: [
           "cv-2026.md",
           "case-study-gastra.md",
@@ -133,7 +133,7 @@ export const agentConsole = {
     {
       chip: "How does this site work?",
       answer: {
-        text: "This site is a static Next.js shell — the agent is a separate FastAPI + LangGraph service over an embedded index of my real corpus: case studies, ADRs, CV. Every answer is traced end-to-end; the retrieval trace under this answer is the design, not decoration. If the agent goes down, the site doesn't. That's a deliberate decision.",
+        text: "This site is a static Next.js shell. The agent is a separate FastAPI + LangGraph service over an embedded index of my real corpus: case studies, ADRs, CV. Every answer is traced end-to-end; the retrieval trace under this answer is the design, not decoration. If the agent goes down, the site doesn't. That's a deliberate decision.",
         sources: [
           "adr-007-site-architecture.md",
           "case-study-site.md",
@@ -167,7 +167,7 @@ export const agentConsole = {
     {
       chip: "From banking to AI",
       answer: {
-        text: "The through-line is trust. Banking taught me to ship code where a mistake moves someone's money — reviews, audits, observability, no heroics. Moving into AI I kept the same bar: LLM systems with traced retrieval, measurable behavior, and honest failure modes. The journey section above tells it chapter by chapter.",
+        text: "The through-line is trust. Banking taught me to ship code where a mistake moves someone's money: reviews, audits, observability, no heroics. Moving into AI I kept the same bar: LLM systems with traced retrieval, measurable behavior, and honest failure modes. The journey section above tells it chapter by chapter.",
         sources: ["cv-2026.md", "case-study-banking-platform.md"],
         trace: {
           chunks: [
@@ -193,7 +193,7 @@ export const agentConsole = {
   ] satisfies readonly { chip: string; answer: CannedAnswer }[],
   // Free-text fallback: the mock is honest about being a mock (spec 003 §5).
   generic: {
-    text: "Straight answer: I'm still the mock adapter — the production retrieval pipeline ships with the agent phase of this site. Right now I only have real answers for the three suggested questions. Try one of those, or skip the middleman entirely: hello@degiorgi.dev.",
+    text: "Straight answer: I'm still the mock adapter. The production retrieval pipeline ships with the agent phase of this site. Right now I only have real answers for the three suggested questions. Try one of those, or skip the middleman entirely.",
     sources: ["cv-2026.md"],
     trace: {
       chunks: [
@@ -216,20 +216,20 @@ export const agentConsole = {
   } satisfies CannedAnswer,
   rejections: {
     // Guardrail demo (spec 003 §5): the trace shows the best chunk BELOW
-    // threshold, and no llm/token stages — retrieval stopped before generation.
+    // threshold, and no llm/token stages: retrieval stopped before generation.
     offTopic: {
       trigger: "weather",
-      text: "That's outside my index — nothing in Agustín's corpus scores above the relevance threshold for that. Try asking about Gastra, banking platforms, or how this site works.",
+      text: "That's outside my index. Nothing in Agustín's corpus scores above the relevance threshold for that. Try asking about Gastra, banking platforms, or how this site works.",
       trace: {
         chunks: [{ source: "cv-2026.md", section: "§interests", score: 0.31 }],
         meta: { embedMs: 11, searchMs: 39, totalMs: 50 },
       },
     },
     budgetExhausted: {
-      text: "That's ten questions — this demo session's budget is spent. The human version has no rate limit: hello@degiorgi.dev, or find me on LinkedIn.",
+      text: "That's ten questions. This demo session's budget is spent. The human version has no rate limit.",
     },
     unavailable: {
-      text: "The agent is unreachable right now — but the site doesn't depend on it, by design. Try again in a minute, or go straight to hello@degiorgi.dev.",
+      text: "The agent is unreachable right now, but the site doesn't depend on it by design. Try again in a minute.",
     },
   },
 } as const;
@@ -246,49 +246,54 @@ export const journey = {
   eyebrow: { index: "01", label: "The journey" },
   headline: "Over 5+ years, one thread: systems people trust.",
   subline: "Six chapters, from banking-grade systems to production AI.",
-  // PLACEHOLDER — six steps with owner's real periods/orgs/narratives (spec 002 §4.3).
   steps: [
     {
-      period: "PLACEHOLDER",
-      role: "PLACEHOLDER — role",
-      org: "PLACEHOLDER — organization",
-      narrative: "PLACEHOLDER — 1–2 sentence narrative of this chapter.",
-      tags: ["PLACEHOLDER"],
+      period: "Feb 2020 – Nov 2020",
+      role: "Java Developer",
+      org: "MobyDigital",
+      narrative:
+        "Started at 18, the same year I began Systems Engineering at UTN. Built monolithic Java/Spring MVC apps and REST APIs, learning Hibernate and MySQL from the ground up.",
+      tags: ["Java", "Spring MVC", "Hibernate", "MySQL"],
     },
     {
-      period: "PLACEHOLDER",
-      role: "PLACEHOLDER — role",
-      org: "PLACEHOLDER — organization",
-      narrative: "PLACEHOLDER — 1–2 sentence narrative of this chapter.",
-      tags: ["PLACEHOLDER"],
+      period: "Nov 2020 – May 2022",
+      role: "Backend Developer",
+      org: "MobyDigital (client: ICBC / YOY)",
+      narrative:
+        "Joined the team building ICBC's new digital bank from zero: REST microservices in Java/Spring Boot for digital onboarding (accounts, card issuance), Oracle PL/SQL, and shared libraries used across the platform.",
+      tags: ["Java", "Spring Boot", "Microservices", "Oracle PL/SQL"],
     },
     {
-      period: "PLACEHOLDER",
-      role: "PLACEHOLDER — role",
-      org: "PLACEHOLDER — organization",
-      narrative: "PLACEHOLDER — 1–2 sentence narrative of this chapter.",
-      tags: ["PLACEHOLDER"],
+      period: "May 2022 – Dec 2022",
+      role: "Full-Stack Developer",
+      org: "MobyDigital",
+      narrative:
+        "Moved into microfrontend architecture (single-spa and Angular), building independently deployable UI modules and a shared component library with the UX/UI team.",
+      tags: ["Angular", "Microfrontends", "single-spa", "TypeScript"],
     },
     {
-      period: "PLACEHOLDER",
-      role: "PLACEHOLDER — role",
-      org: "PLACEHOLDER — organization",
-      narrative: "PLACEHOLDER — 1–2 sentence narrative of this chapter.",
-      tags: ["PLACEHOLDER"],
+      period: "May 2022 – Apr 2023",
+      role: "Backend Mentor",
+      org: "MobyDigital",
+      narrative:
+        "Designed the company's Backend Roadmap and mentored 8+ trainees, including candidates from the government's PIL program. 7 of 8 got hired, several now Senior Devs.",
+      tags: ["Mentorship", "Technical Leadership"],
     },
     {
-      period: "PLACEHOLDER",
-      role: "PLACEHOLDER — role",
-      org: "PLACEHOLDER — organization",
-      narrative: "PLACEHOLDER — 1–2 sentence narrative of this chapter.",
-      tags: ["PLACEHOLDER"],
+      period: "Jan 2023 – Present",
+      role: "Tech Lead",
+      org: "MobyDigital → ICBC Argentina",
+      narrative:
+        "Promoted to Tech Lead for YOY's payments and transfers team, later converting to a direct ICBC employee. Maintained 15+ reusable microservices behind transaction flows serving up to 640K logins on peak days. Since Oct 2025, scope expanded into architecture for ICBC's Retail segment: migration roadmaps, C4 diagrams, and ADRs for a platform serving 560K+ monthly active users.",
+      tags: ["Leadership", "Payments", "Microservices", "Architecture", "ADRs"],
     },
     {
-      period: "Now",
-      role: "PLACEHOLDER — current role",
-      org: "PLACEHOLDER — organization",
-      narrative: "PLACEHOLDER — what you are building today.",
-      tags: ["PLACEHOLDER"],
+      period: "2025 – Present",
+      role: "Independent project",
+      org: "Gastra",
+      narrative:
+        "Building a restaurant-recommendation app on the side: hybrid retrieval (pgvector + geolocation + weather) that turns a natural-language query into a ranked result via LLM, hexagonal architecture, local inference via Ollama.",
+      tags: ["RAG", "LLM", "Spring AI", "pgvector", "Hexagonal Architecture"],
     },
   ] satisfies readonly JourneyStep[],
 } as const;
@@ -297,7 +302,6 @@ export type WorkCard = {
   kind: string;
   title: string;
   summary: string;
-  href: string;
 };
 
 export const work = {
@@ -305,28 +309,24 @@ export const work = {
   headline: "Case studies, not screenshots.",
   subline:
     "I've worked on a variety of projects, from banking-grade systems to production AI.",
-  linkLabel: "read case study →",
   cards: [
     {
       kind: "Product · AI",
       title: "Gastra",
       summary:
-        "PLACEHOLDER — DRAFT: one-line outcome-focused summary of the Gastra case study.",
-      href: "#", // stub link (Phase 1); real case study lands in the content phase
+        "A restaurant-recommendation app with hybrid retrieval (vector search, geolocation, live weather) that turns a natural-language query into a ranked list or a single high-confidence match. Hexagonal architecture, local LLM inference, built under Spec-Driven Development.",
     },
     {
       kind: "Platform · Banking",
       title: "Banking at scale",
       summary:
-        "PLACEHOLDER — DRAFT: one-line summary of the banking-grade systems case study.",
-      href: "#",
+        "Tech Lead for YOY, ICBC's mobile banking app: transaction flows serving up to 640K logins on peak days. Core microservices at scale: fraud prevention (~35M monthly hits), transfers (~13M), bill payments (~4.5M).",
     },
     {
       kind: "Engineering · This site",
       title: "degiorgi.dev",
       summary:
-        "PLACEHOLDER — DRAFT: one-line summary of how this site and its RAG console are built.",
-      href: "#",
+        "This site: a static Next.js shell with a RAG-style console over my own work. Every answer traces back to the source chunk it came from.",
     },
   ] satisfies readonly WorkCard[],
 } as const;
@@ -404,22 +404,25 @@ export const contact = {
   eyebrow: { index: "04", label: "Contact" },
   headline: "Let's talk.",
   subline:
-    "PLACEHOLDER — DRAFT: one line inviting recruiters/engineers to reach out.",
+    "I like talking shop: fintech, distributed systems, AI engineering. If that's you too, reach out.",
   cta: {
     email: "hello@degiorgi.dev",
     linkedin: "LinkedIn",
     github: "GitHub",
     x: "X",
+    cv: "Download CV",
+    copyEmail: "Copy email address",
+    copyEmailCopied: "Copied!",
   },
   badge: { prefix: "GET /contact →", status: "200 OK" },
 } as const;
 
-// External links consumed by Contact (spec 002 §4.6, §8). Not a page section —
+// External links consumed by Contact (spec 002 §4.6, §8). Not a page section:
 // no eyebrow/headline of its own; that content belongs to `contact` above.
 export const links = {
   email: "hello@degiorgi.dev",
   linkedin: "https://www.linkedin.com/in/agustindegiorgi",
   github: "https://github.com/degiorgiagustin",
   x: "https://x.com/degiorgiagustin",
-  cv: "/Agustin_De_Giorgi_CV.pdf",
+  cv: "/cv/CV_Agustin_De_Giorgi_en.pdf",
 } as const;

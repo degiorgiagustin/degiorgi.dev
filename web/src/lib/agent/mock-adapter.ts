@@ -50,6 +50,7 @@ export class MockAgentAdapter implements AgentAdapter {
           kind: "rejection",
           reason: "budget_exhausted",
           text: agentConsole.rejections.budgetExhausted.text,
+          showContact: true,
         };
         // No thinking delay: the cap check never reaches the pipeline.
         await this.stream(rejection.text, onDelta);
@@ -66,6 +67,7 @@ export class MockAgentAdapter implements AgentAdapter {
         kind: "rejection",
         reason: "unavailable",
         text: agentConsole.rejections.unavailable.text,
+        showContact: true,
       };
     }
   }
@@ -84,7 +86,7 @@ export class MockAgentAdapter implements AgentAdapter {
       };
     }
 
-    return toAnswer(agentConsole.generic);
+    return { ...toAnswer(agentConsole.generic), showContact: true };
   }
 
   private async stream(text: string, onDelta?: (chunk: string) => void) {
