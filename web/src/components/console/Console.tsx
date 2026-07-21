@@ -2,6 +2,7 @@ import { useState, useSyncExternalStore } from "react";
 import { track } from "@vercel/analytics";
 import { agentConsole } from "@/content/messages";
 import { agentSession } from "@/lib/agent/session";
+import { t, type Locale } from "@/lib/i18n/locale";
 import { AnswerBlock } from "./AnswerBlock";
 import { ConsoleFrame } from "./ConsoleFrame";
 import { useTypingPlaceholder } from "./useTypingPlaceholder";
@@ -12,24 +13,27 @@ import { useTypingPlaceholder } from "./useTypingPlaceholder";
  * any exchange (even one asked from the dock) re-renders here, which is what
  * makes the two surfaces "two views over one session" (spec 003 §4).
  */
-export function Console() {
+export function Console({ locale }: { locale: Locale }) {
   const session = useSyncExternalStore(
     agentSession.subscribe,
     agentSession.getSnapshot,
     agentSession.getServerSnapshot,
   );
   const [value, setValue] = useState("");
-  const placeholder = useTypingPlaceholder(agentConsole.placeholders);
+  const placeholder = useTypingPlaceholder(
+    agentConsole.placeholders.map((p) => t(p, locale)),
+  );
   const busy = session.exchange?.status === "streaming";
 
   const submit = (question: string) => {
     setValue(question); // chips fill the input like the prototype
     track("agent_ask", { surface: "hero" });
-    void agentSession.ask(question);
+    void agentSession.ask(question, locale);
   };
 
   return (
     <ConsoleFrame
+      locale={locale}
       placeholder={placeholder}
       value={value}
       onValueChange={setValue}
@@ -42,6 +46,7 @@ export function Console() {
           key={session.questionCount}
           exchange={session.exchange}
           surface="hero"
+          locale={locale}
         />
       )}
     </ConsoleFrame>

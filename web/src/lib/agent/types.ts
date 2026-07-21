@@ -5,9 +5,14 @@
  * backend becomes real.
  */
 
+import type { Locale } from "@/lib/i18n/locale";
+
 export interface AgentQuery {
   question: string;
   sessionId: string;
+  // Which language to answer in (spec 006) — genuinely part of the contract,
+  // not a UI-only concern: a real Phase 3 backend needs this too.
+  locale: Locale;
 }
 
 export interface TraceChunk {

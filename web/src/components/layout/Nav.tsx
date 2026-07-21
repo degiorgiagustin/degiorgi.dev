@@ -1,18 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { site, nav } from "@/content/messages";
-import { StatusPill } from "@/components/ui/StatusPill";
+import { site, nav, contact, links } from "@/content/messages";
+import { t, type Locale } from "@/lib/i18n/locale";
+import { Icon } from "@/components/stack/Icon";
+import { IconLink } from "@/components/ui/IconLink";
+import { GlobeIcon } from "@/components/ui/icons";
 
 // Fixed glass navigation bar (spec 002 §4.1, prototype composition). "use
 // client": detaches into a floating pill once scrolled, via an
 // IntersectionObserver on #nav-sentinel (layout.tsx) — same pattern as
 // Dock's #hero-console observer, not raw scroll-position polling. Content
-// (wordmark/links/status pill) is identical in both states; only the
+// (wordmark/links/social icons) is identical in both states; only the
 // container morphs. One backdrop-blur layer either way (3-blur budget).
-// Three zones: wordmark left, anchor links center (desktop only), status
-// right. Mobile (<sm): wordmark + status dot only — links are in-page anchors
-// reachable by scrolling, so no hamburger in this phase.
+// Three zones: wordmark left, anchor links center (desktop only), social
+// icons then language switch right, in that order (LinkedIn/GitHub/X
+// replaced the status pill, which read as a stray "open to work" signal
+// even after its copy was fixed in spec 005; direct links are just more
+// useful here). Mobile (<sm): wordmark + icons, nav links hidden — they're
+// in-page anchors reachable by scrolling, so no hamburger in this phase.
 // Both states anchor left-1/2 + -translate-x-1/2 — a shared, constant
 // centering mechanism (spec 002 §4.1). Only width (symmetric, from that
 // fixed center) and top actually animate; nothing ever slides sideways.
@@ -22,7 +28,16 @@ const restClass = "bg-bg/60 border-line top-0 w-full border-b backdrop-blur-lg";
 const floatClass =
   "nav-float border-line-strong bg-glass shadow-panel inset-shadow-bevel rounded-pill border backdrop-blur-lg";
 
-export function Nav() {
+// Language switch is a plain link, not client state (spec 006 §2: URL-based
+// routing) — swapping locale is just navigating to the other route tree.
+// /es isn't linked from the sitemap/production nav yet (Phase 2, real
+// content), but the owner needs a way to actually reach and test it now.
+// Shows BOTH options (current highlighted, static; other a live link) —
+// showing only the target language was ambiguous (read as "this is the
+// current language," not "click to switch to this").
+const localeHref: Record<Locale, string> = { en: "/", es: "/es" };
+
+export function Nav({ locale }: { locale: Locale }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -30,9 +45,9 @@ export function Nav() {
     if (!sentinel) return;
     // Positive rootMargin grows the detection area 24px above the real
     // viewport, giving a real buffer before triggering. A negative value
-    // here (the original bug) shrinks it instead, so the sentinel reads as
-    // "already scrolled past" the instant the page loads — the pill would
-    // never show its resting state or animate the conversion at all.
+    // here reads the sentinel as "already scrolled past" the instant the
+    // page loads — the pill would never show its resting state or animate
+    // the conversion at all.
     const observer = new IntersectionObserver(
       ([entry]) => setScrolled(!entry.isIntersecting),
       { rootMargin: "24px 0px 0px 0px" },
@@ -61,14 +76,42 @@ export function Nav() {
                 href={link.href}
                 className="text-text-2 hover:text-text inline-flex min-h-11 items-center text-sm transition-colors"
               >
-                {link.label}
+                {t(link.label, locale)}
               </a>
             </li>
           ))}
         </ul>
 
-        <div className="col-start-3 justify-self-end">
-          <StatusPill label={site.status} />
+        <div className="col-start-3 flex items-center justify-self-end">
+          <IconLink
+            href={t(links.linkedin, locale)}
+            label={t(contact.cta.linkedin, locale)}
+            external
+            icon={<Icon slug="linkedin" className="size-4" />}
+          />
+          <IconLink
+            href={links.github}
+            label={t(contact.cta.github, locale)}
+            external
+            icon={<Icon slug="github" className="size-4" />}
+          />
+          <IconLink
+            href={links.x}
+            label={t(contact.cta.x, locale)}
+            external
+            icon={<Icon slug="x" className="size-4" />}
+          />
+          <a
+            href={locale === "en" ? localeHref.es : localeHref.en}
+            title={locale === "en" ? "Switch to Spanish" : "Switch to English"}
+            aria-label={
+              locale === "en" ? "Switch to Spanish" : "Switch to English"
+            }
+            className="text-text-3 hover:text-gold ml-1 inline-flex min-h-11 items-center gap-1 font-mono text-xs uppercase transition-colors"
+          >
+            <GlobeIcon className="size-3.5" aria-hidden />
+            {locale}
+          </a>
         </div>
       </nav>
     </header>

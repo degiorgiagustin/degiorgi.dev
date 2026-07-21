@@ -2,6 +2,7 @@ import { useState } from "react";
 import { track } from "@vercel/analytics";
 import { agentConsole, contact, links } from "@/content/messages";
 import type { AgentExchange } from "@/lib/agent/session";
+import { t, type Locale } from "@/lib/i18n/locale";
 import { Icon } from "@/components/stack/Icon";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { IconLink } from "@/components/ui/IconLink";
@@ -23,6 +24,7 @@ type AnswerBlockProps = {
   exchange: AgentExchange;
   variant?: "panel" | "card";
   surface: "hero" | "dock"; // which console instance, for analytics (spec 005)
+  locale: Locale;
 };
 
 const variantClass: Record<NonNullable<AnswerBlockProps["variant"]>, string> = {
@@ -34,6 +36,7 @@ export function AnswerBlock({
   exchange,
   variant = "panel",
   surface,
+  locale,
 }: AnswerBlockProps) {
   const [traceOpen, setTraceOpen] = useState(false);
 
@@ -60,7 +63,7 @@ export function AnswerBlock({
           <p className="mt-3">{exchange.text}</p>
         ) : (
           <p className="text-text-3 mt-3 font-mono text-xs">
-            {agentConsole.thinking}
+            {t(agentConsole.thinking, locale)}
           </p>
         )}
       </div>
@@ -79,15 +82,15 @@ export function AnswerBlock({
             </a>
             <CopyButton
               value={links.email}
-              label={contact.cta.copyEmail}
-              copiedLabel={contact.cta.copyEmailCopied}
+              label={t(contact.cta.copyEmail, locale)}
+              copiedLabel={t(contact.cta.copyEmailCopied, locale)}
               onCopied={() => track("email_copy", { surface })}
             />
           </span>
           <span className="inline-flex items-center gap-1">
             <IconLink
-              href={links.linkedin}
-              label={contact.cta.linkedin}
+              href={t(links.linkedin, locale)}
+              label={t(contact.cta.linkedin, locale)}
               external
               icon={<Icon slug="linkedin" className="size-4" />}
               onClick={() =>
@@ -96,7 +99,7 @@ export function AnswerBlock({
             />
             <IconLink
               href={links.github}
-              label={contact.cta.github}
+              label={t(contact.cta.github, locale)}
               external
               icon={<Icon slug="github" className="size-4" />}
               onClick={() =>
@@ -105,7 +108,7 @@ export function AnswerBlock({
             />
             <IconLink
               href={links.x}
-              label={contact.cta.x}
+              label={t(contact.cta.x, locale)}
               external
               icon={<Icon slug="x" className="size-4" />}
               onClick={() => track("social_click", { network: "x", surface })}
@@ -129,9 +132,12 @@ export function AnswerBlock({
               expanded={traceOpen}
               onClick={() => setTraceOpen((open) => !open)}
             >
-              {traceOpen
-                ? agentConsole.footer.hideTrace
-                : agentConsole.footer.showTrace}
+              {t(
+                traceOpen
+                  ? agentConsole.footer.hideTrace
+                  : agentConsole.footer.showTrace,
+                locale,
+              )}
             </TextButton>
           </div>
           {traceOpen && <TraceDetail trace={trace} />}

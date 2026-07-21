@@ -6,11 +6,12 @@
 // the final state (rail filled, all nodes lit) with no listener.
 import { useEffect, useRef } from "react";
 import { journey } from "@/content/messages";
+import { t, type Locale } from "@/lib/i18n/locale";
 import { PageSection } from "@/components/layout/PageSection";
 import { SectionHead } from "@/components/layout/SectionHead";
 import { TimelineStep } from "@/components/journey/TimelineStep";
 
-export function Timeline() {
+export function Timeline({ locale }: { locale: Locale }) {
   const railRef = useRef<HTMLSpanElement>(null);
   const fillRef = useRef<HTMLSpanElement>(null);
   const stepRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -98,9 +99,12 @@ export function Timeline() {
     >
       {/* Desktop: sticky header column beside the timeline; mobile: on top. */}
       <SectionHead
-        eyebrow={journey.eyebrow}
-        headline={journey.headline}
-        subline={journey.subline}
+        eyebrow={{
+          index: journey.eyebrow.index,
+          label: t(journey.eyebrow.label, locale),
+        }}
+        headline={t(journey.headline, locale)}
+        subline={t(journey.subline, locale)}
         className="mb-10 lg:sticky lg:top-24 lg:col-span-1 lg:mb-0 lg:self-start"
       />
 
@@ -130,7 +134,13 @@ export function Timeline() {
               aria-hidden
               className="border-text-3 bg-bg group-data-[lit=true]:border-gold group-data-[lit=true]:bg-gold group-data-[lit=true]:shadow-glow-gold-strong rounded-pill absolute top-1.5 left-3 size-2.5 -translate-x-1/2 border transition-all duration-400"
             />
-            <TimelineStep step={step} />
+            <TimelineStep
+              period={step.period}
+              role={t(step.role, locale)}
+              org={step.org}
+              narrative={t(step.narrative, locale)}
+              tags={step.tags}
+            />
           </li>
         ))}
       </ol>
