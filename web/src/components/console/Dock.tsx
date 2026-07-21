@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { track } from "@vercel/analytics";
 import { agentConsole } from "@/content/messages";
 import { agentSession } from "@/lib/agent/session";
+import { t, type Locale } from "@/lib/i18n/locale";
 import { AnswerBlock } from "./AnswerBlock";
 import { ConsoleButton } from "./ConsoleButton";
 import { PromptInput } from "./PromptInput";
@@ -15,7 +16,7 @@ import { TextButton } from "./TextButton";
  * is replaced by a new question. Focus moves into the card on open and back
  * to the input on close (spec 003 §6).
  */
-export function Dock() {
+export function Dock({ locale }: { locale: Locale }) {
   const session = useSyncExternalStore(
     agentSession.subscribe,
     agentSession.getSnapshot,
@@ -84,7 +85,7 @@ export function Dock() {
     setValue("");
     setCardOpen(true); // new question replaces the previous card content
     track("agent_ask", { surface: "dock" });
-    void agentSession.ask(question);
+    void agentSession.ask(question, locale);
   };
 
   return (
@@ -101,12 +102,12 @@ export function Dock() {
           ref={cardRef}
           tabIndex={-1}
           role="region"
-          aria-label={agentConsole.dock.cardAriaLabel}
+          aria-label={t(agentConsole.dock.cardAriaLabel, locale)}
           className="bg-glass-solid border-line-strong rounded-panel shadow-panel animate-rise mb-2.5 border p-4 text-left outline-none"
         >
           <div className="mb-1 flex justify-end">
             <TextButton tone="muted" onClick={closeCard}>
-              {agentConsole.dock.close}
+              {t(agentConsole.dock.close, locale)}
             </TextButton>
           </div>
           <AnswerBlock
@@ -114,6 +115,7 @@ export function Dock() {
             exchange={session.exchange}
             variant="card"
             surface="dock"
+            locale={locale}
           />
         </div>
       )}
@@ -130,8 +132,9 @@ export function Dock() {
         </span>
         <PromptInput
           ref={inputRef}
+          ariaLabel={t(agentConsole.inputAriaLabel, locale)}
           value={value}
-          placeholder={agentConsole.dock.placeholder}
+          placeholder={t(agentConsole.dock.placeholder, locale)}
           onValueChange={setValue}
           onSubmitRequest={submitQuestion}
           readOnly={busy}
@@ -142,7 +145,7 @@ export function Dock() {
           type="submit"
           disabled={busy || session.locked}
         >
-          {agentConsole.dock.send}
+          {t(agentConsole.dock.send, locale)}
         </ConsoleButton>
       </form>
     </div>

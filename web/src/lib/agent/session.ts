@@ -1,5 +1,6 @@
 import { agent } from "./adapter";
 import type { AgentResponse } from "./types";
+import type { Locale } from "@/lib/i18n/locale";
 
 /*
  * AgentSession — spec 003 §4. A plain client-side module (deliberately not a
@@ -60,8 +61,10 @@ export const agentSession = {
   getServerSnapshot: (): AgentSessionState => initialState,
 
   // The one command both surfaces call; orchestration lives here so Console
-  // and Dock stay pure views.
-  async ask(question: string): Promise<void> {
+  // and Dock stay pure views. locale comes from the caller (Console/Dock
+  // know it via their own prop) — this module has no way to determine it
+  // itself (spec 006: no hidden global, see lib/i18n/locale.ts).
+  async ask(question: string, locale: Locale): Promise<void> {
     const q = question.trim();
     if (!q || state.exchange?.status === "streaming") return;
 
@@ -71,7 +74,7 @@ export const agentSession = {
     });
 
     const response = await agent.ask(
-      { question: q, sessionId: state.sessionId },
+      { question: q, sessionId: state.sessionId, locale },
       (delta) => {
         const exchange = state.exchange;
         if (!exchange) return;
