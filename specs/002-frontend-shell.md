@@ -145,9 +145,9 @@ Scroll reveals: fade-up via IntersectionObserver on section heads and cards.
 
 ## 6. Owner-provided data (blockers for content, not for build)
 
-Real timeline dates, email address, LinkedIn/GitHub/X URLs, and CV file are
-in. Content sourcing, voice, and remaining gaps are tracked in **spec 005**;
-the Contact subline is still `PLACEHOLDER` there.
+Real timeline dates, email address, LinkedIn/GitHub/X URLs, CV file, and the
+Contact subline are all in. Content sourcing, voice, and any remaining gaps
+are tracked in **spec 005**.
 
 ## 7. Acceptance criteria
 

@@ -1,4 +1,5 @@
 import { useState, useSyncExternalStore } from "react";
+import { track } from "@vercel/analytics";
 import { agentConsole } from "@/content/messages";
 import { agentSession } from "@/lib/agent/session";
 import { AnswerBlock } from "./AnswerBlock";
@@ -23,6 +24,7 @@ export function Console() {
 
   const submit = (question: string) => {
     setValue(question); // chips fill the input like the prototype
+    track("agent_ask", { surface: "hero" });
     void agentSession.ask(question);
   };
 
@@ -36,7 +38,11 @@ export function Console() {
       locked={session.locked}
     >
       {session.exchange && (
-        <AnswerBlock key={session.questionCount} exchange={session.exchange} />
+        <AnswerBlock
+          key={session.questionCount}
+          exchange={session.exchange}
+          surface="hero"
+        />
       )}
     </ConsoleFrame>
   );

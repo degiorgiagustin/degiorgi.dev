@@ -1,12 +1,10 @@
-import { contact, links } from "@/content/messages";
+import { contact } from "@/content/messages";
 import { GradientHeadline } from "@/components/hero/GradientHeadline";
 import { PageSection } from "@/components/layout/PageSection";
 import { Reveal } from "@/components/layout/Reveal";
+import { ContactActions } from "@/components/contact/ContactActions";
 import { HttpStatusBadge } from "@/components/contact/HttpStatusBadge";
-import { Icon } from "@/components/stack/Icon";
-import { Button } from "@/components/ui/Button";
-import { CopyButton } from "@/components/ui/CopyButton";
-import { DownloadIcon } from "@/components/ui/icons";
+import { ScrollEndTracker } from "@/components/contact/ScrollEndTracker";
 
 // Closing CTA (spec 002 §4.6). Deliberately not built on SectionHead: this is
 // a gradient-headline call to action like Hero, not a plain section header.
@@ -27,56 +25,20 @@ export function Contact() {
         </p>
       </Reveal>
 
+      {/* One visual pill, two click zones: the email text opens a mail app,
+          the icon copies. Hand-built rather than Button + CopyButton side by
+          side, which read as two unrelated controls. Tracking lives in the
+          client island below (ContactActions), not here — this section is
+          otherwise a Server Component. */}
       <Reveal className="mt-9 flex flex-wrap items-center justify-center gap-3">
-        {/* One visual pill, two click zones: the email text opens a mail
-            app, the icon copies. Hand-built rather than Button + CopyButton
-            side by side, which read as two unrelated controls. */}
-        <span className="rounded-button from-gold-light to-gold text-bg inline-flex items-center bg-gradient-to-b font-mono text-xs font-medium transition hover:brightness-110">
-          <a
-            href={`mailto:${links.email}`}
-            className="inline-flex min-h-11 items-center py-2 pr-3 pl-5"
-          >
-            {contact.cta.email}
-          </a>
-          <CopyButton
-            value={links.email}
-            label={contact.cta.copyEmail}
-            copiedLabel={contact.cta.copyEmailCopied}
-            className="border-bg/25 hover:bg-bg/10 rounded-r-button inline-flex size-11 shrink-0 items-center justify-center border-l transition-colors"
-          />
-        </span>
-        <Button href={links.cv} variant="ghost" external>
-          <span className="inline-flex items-center gap-2">
-            <DownloadIcon className="size-3.5" />
-            {contact.cta.cv}
-          </span>
-        </Button>
-        <Button
-          href={links.linkedin}
-          variant="ghost"
-          external
-          icon={<Icon slug="linkedin" className="size-4" />}
-          label={contact.cta.linkedin}
-        />
-        <Button
-          href={links.github}
-          variant="ghost"
-          external
-          icon={<Icon slug="github" className="size-4" />}
-          label={contact.cta.github}
-        />
-        <Button
-          href={links.x}
-          variant="ghost"
-          external
-          icon={<Icon slug="x" className="size-4" />}
-          label={contact.cta.x}
-        />
+        <ContactActions />
       </Reveal>
 
       <Reveal className="mt-8 inline-block">
         <HttpStatusBadge />
       </Reveal>
+
+      <ScrollEndTracker />
     </PageSection>
   );
 }

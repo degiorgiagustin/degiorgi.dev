@@ -13,6 +13,7 @@ type CopyButtonProps = {
   label: string;
   copiedLabel: string;
   className?: string;
+  onCopied?: () => void; // analytics-only hook, fired only on a real copy
 };
 
 export function CopyButton({
@@ -20,24 +21,35 @@ export function CopyButton({
   label,
   copiedLabel,
   className,
+  onCopied,
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(value);
-    } else {
-      const textarea = document.createElement("textarea");
-      textarea.value = value;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = value;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        try {
+          textarea.select();
+          document.execCommand("copy");
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      }
+      setCopied(true);
+      onCopied?.();
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard write failed (unfocused document, permission policy,
+      // browser quirk) — the adjacent mailto: link still works, so fail
+      // silently rather than showing a "Copied!" state that lied.
     }
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
   }
 
   return (

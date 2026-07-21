@@ -9,13 +9,21 @@ type IconLinkProps = {
   label: string;
   icon: ReactNode;
   external?: boolean;
+  onClick?: () => void; // analytics-only side effect; navigation is unchanged
 };
 
-export function IconLink({ href, label, icon, external }: IconLinkProps) {
+export function IconLink({
+  href,
+  label,
+  icon,
+  external,
+  onClick,
+}: IconLinkProps) {
   return (
     <a
       href={href}
       aria-label={label}
+      onClick={onClick}
       {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
       className="text-text-3 hover:text-gold inline-flex size-11 shrink-0 items-center justify-center transition-colors"
     >
