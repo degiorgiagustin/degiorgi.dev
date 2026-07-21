@@ -8,16 +8,22 @@ import dynamic from "next/dynamic";
 import type { Locale } from "@/lib/i18n/locale";
 import { ConsoleFacsimile } from "./ConsoleFacsimile";
 
-const Console = dynamic(
+// Two static, module-scope dynamic() calls — one per locale (spec 006 §7
+// fix) — instead of one built inside the component. `loading` needs the real
+// `locale` to render a matching facsimile, but eslint's
+// react-hooks/static-components rule forbids creating a component during
+// render even behind useMemo (React can drop that cache and remount). Both
+// locales are fixed ahead of time here; HeroConsole just picks between them.
+const ConsoleEn = dynamic(
   () => import("./Console").then((module) => module.Console),
-  { ssr: false, loading: () => <ConsoleFacsimile /> },
+  { ssr: false, loading: () => <ConsoleFacsimile locale="en" /> },
+);
+const ConsoleEs = dynamic(
+  () => import("./Console").then((module) => module.Console),
+  { ssr: false, loading: () => <ConsoleFacsimile locale="es" /> },
 );
 
-// The pre-hydration facsimile (loading, above) always shows the English
-// placeholder regardless of locale — spec 006 Phase 1: es content equals en
-// content right now, so this is invisible; Phase 2 would need the loading
-// callback to know locale too, which next/dynamic doesn't support directly
-// (it's a fixed function reference, not re-created per render).
 export function HeroConsole({ locale }: { locale: Locale }) {
+  const Console = locale === "es" ? ConsoleEs : ConsoleEn;
   return <Console locale={locale} />;
 }

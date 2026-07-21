@@ -1,8 +1,8 @@
 # Spec 006 — EN/ES Language Toggle
 
-Status: **Phase 1 complete** (infrastructure) · Phase 2 pending (real Spanish
-content) · Depends on: 001 (design system), 002 (frontend shell), 003
-(console widget), 005 (content & voice)
+Status: **Phase 1 + 2 complete** (infrastructure and real Spanish content) ·
+Depends on: 001 (design system), 002 (frontend shell), 003 (console widget),
+005 (content & voice)
 
 ## 1. Goal
 
@@ -146,21 +146,35 @@ Three changes landed alongside the i18n wiring, all requested directly:
   three links already render elsewhere on the page. `site.status` and
   `components/ui/StatusPill.tsx` are deleted, not deprecated — confirmed
   unused anywhere else before removing.
-- A language switch link: a small pill (globe icon + "ES"/"EN", the target
-  language, not the current one) that navigates to the other locale's root
-  (`/` ↔ `/es`). Not client state — swapping locale is just following a
-  link, per §2's routing decision, so it's a plain `<a>`, zero JS. Present
-  now even though `/es` isn't in the sitemap yet (§8): the owner needs a way
-  to actually reach and test the route, not just trust it exists. Doesn't
-  yet preserve the current scroll position/section across the switch — a
-  nice-to-have, not required for Phase 1.
+- A language switch link: globe icon + the *current* locale code, borderless,
+  navigating to the other locale's root (`/` ↔ `/es`) on click. Went through
+  two revisions based on direct feedback: the first version showed the
+  *target* language ("ES" while on the English page), which read as
+  ambiguous/wrong; a second version showing both options side by side
+  ("EN / ES", current one static and gold) fixed the ambiguity but looked
+  visually heavy (bordered pill). Landed on the simplest version: one
+  element, current language, click to switch — matching the plain, borderless
+  style of the rest of Nav's icon links. Not client state — swapping locale
+  is just following a link, per §2's routing decision, so it's a plain `<a>`,
+  zero JS. Present even though `/es` isn't in the sitemap yet (§8): the owner
+  needs a way to actually reach and test the route, not just trust it
+  exists. Doesn't yet preserve the current scroll position/section across
+  the switch — a nice-to-have, not required.
 
-## 7. Scope landed (Phase 1)
+## 7. Scope landed (Phase 1 + 2)
 
 - `lib/i18n/locale.ts`: `Locale`, `Localized`, `t(field, locale)` — plain,
   no React APIs, works identically anywhere (§4).
-- `content/messages.ts`: every translatable field converted to `Localized`;
-  `es` values currently equal `en` (not real translation yet).
+- `content/messages.ts`: every translatable field converted to `Localized`,
+  with real Spanish content (Phase 2) — not machine-translated wholesale.
+  The journey section draws directly from the owner's own dictated Spanish
+  career narrative (predates this spec; he wrote it in Spanish specifically
+  anticipating this work); everything else is translated/adapted from the
+  owner-reviewed English copy (spec 005's voice pass), in neutral
+  professional Spanish (not regional voseo), matching the recruiter-facing
+  register the English copy already uses. Proper nouns, tags, and the
+  terminal/API-voice strings (`contact.badge.*`, trace formatting) stay
+  English in both locales deliberately (§3), not oversights.
 - Section-level components (`Hero`, `Timeline`, `Work`, `Stack`, `Contact`,
   `ContactActions`, `Nav`, `PersonJsonLd`, `Console`, `Dock`, `ConsoleFrame`,
   `ConsoleFacsimile`, `AnswerBlock`) take `locale` and resolve `t()`
@@ -179,29 +193,41 @@ Three changes landed alongside the i18n wiring, all requested directly:
   (Spanish). Both pages render the same extracted `HomePage` component
   (`components/layout/HomePage.tsx`), each passing their own literal
   `locale`.
-- `opengraph-image.tsx` and the root layout's static `metadata` export stay
-  English-only for Phase 1 — both run outside `LocaleLayout`'s boundary (the
-  OG image is an isolated route-handler-style file; the root layout is
-  shared by every locale by definition), so per-locale values need
-  `generateMetadata()` per page (Phase 2), not a fix here.
+- `opengraph-image.tsx` split into a shared `lib/og/render.tsx` helper
+  (`renderOgImage(locale)`, the Satori/font-loading logic once) plus two thin
+  per-locale route files: `app/opengraph-image.tsx` (`"en"`) and
+  `app/es/opengraph-image.tsx` (`"es"`), each only declaring the
+  route-segment exports (`alt`/`size`/`contentType`) Next.js's file
+  convention requires per segment. Fixed the real, visible gap this had
+  become once Spanish content existed: a `/es` link shared to
+  WhatsApp/Twitter/etc. now shows a Spanish preview card, not an English one.
+  Verified empirically, not just by a successful build: `rm -rf .next && npm
+  run build`, then compared `.next/server/app/opengraph-image.body` against
+  `.next/server/app/es/opengraph-image.body` — different byte sizes, different
+  hashes, confirming the two routes render genuinely different images.
 - `ConsoleFacsimile` (the pre-hydration stand-in, rendered via
-  `next/dynamic`'s `loading` option) stays English-only regardless of route
-  for the same structural reason: `loading` is a fixed function reference,
-  not re-created per render, so it can't receive the real `locale` as a
-  prop. Invisible in Phase 1 since `es` content equals `en`; needs different
-  wiring in Phase 2.
+  `next/dynamic`'s `loading` option) is now locale-aware. `loading` being a
+  fixed function reference (not re-created per render) is still true, so a
+  single `dynamic()` call at module scope can't see a per-render `locale`
+  prop — fixed not by creating the component during render (a `useMemo`
+  attempt was tried and rejected: `eslint-plugin-react-hooks`'s
+  `static-components` rule forbids it outright, since React can drop a
+  `useMemo` cache and remount, defeating the whole point of a stable dynamic
+  import), but by declaring **two** static, module-scope `dynamic()` calls in
+  `HeroConsole.tsx` — one per locale, each with its own `loading` closure —
+  and picking between them with a plain ternary on `locale`. Verified
+  empirically: grepped the built `index.html` vs. `es.html` for the console's
+  `placeholder` attribute — `"Ask anything about my work…"` on `/`,
+  `"Pregunta lo que quieras sobre mi trabajo…"` on `/es`.
 
-## 8. Explicitly deferred to Phase 2
+## 8. Remaining gaps (not yet real content problems, but real omissions)
 
-- Real Spanish content (`es` fields still equal `en` everywhere).
-- Nav link to `/es` (not discoverable yet — nothing half-translated should
-  reach a real visitor).
 - `sitemap.ts` entry for `/es`, `hreflang` alternate tags, per-route
   `generateMetadata()` (locale-correct title/description/canonical), and
   `<html lang>` correctness (currently hardcoded `"en"` in the root layout —
-  needs middleware or a per-locale root to fix properly, bundled with the
-  rest of the real metadata work rather than solved piecemeal now).
-- `/es/opengraph-image.tsx`.
+  needs middleware or a per-locale root to fix properly). `/es` is
+  reachable via the Nav switch but not yet discoverable by search engines.
+  This is the one piece of Phase 1's known scope still open.
 
 ## 9. Acceptance criteria
 
@@ -219,6 +245,14 @@ Three changes landed alongside the i18n wiring, all requested directly:
       mechanisms (cache(), Context) both passed the build and both failed
       this exact check; the final explicit-prop version passes it with all
       four occurrences per page consistent (§4).
-- [ ] Real Spanish content (Phase 2).
-- [ ] `/es` discoverable via sitemap + hreflang (Phase 2) — Nav link already
-      shipped early, ahead of schedule, so the owner could test the route.
+- [x] Real Spanish content — journey section sourced from the owner's own
+      dictated narrative; everything else translated/adapted from the
+      owner-reviewed English copy, neutral register, verified against `/es`'s
+      built HTML the same way as the LinkedIn URL check above.
+- [x] `/es/opengraph-image.tsx` renders distinct Spanish content and
+      locale-aware `ConsoleFacsimile` shows the Spanish placeholder on `/es`
+      (§7) — both verified empirically against the built output, not just a
+      successful build.
+- [ ] `/es` discoverable via sitemap + hreflang (§8) — Nav link already
+      shipped, so the owner can test the route today; search-engine
+      discoverability is the one piece still open.
