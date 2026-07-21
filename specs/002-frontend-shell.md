@@ -16,6 +16,14 @@ Changelog v4: shell implementation complete (all six page sections built and
 reviewed phase-by-phase). SEO/metadata and deployment (former §6-7) extracted
 to **spec 004** now that they can be tracked against the console/dock (spec
 003) landing too, instead of against a still-in-progress shell.
+Changelog v5: real content landed via **spec 005** (content & voice pass).
+Journey stays at six steps, but the owner corrected two shapes: Full-Stack
+Developer and Backend Mentor are independent, concurrent roles rather than
+one merged step; the Oct 2025 architecture scope expansion is not a separate
+official title, so it's folded into the Tech Lead step's narrative rather
+than becoming its own "Software Architect" step. Work cards dropped their
+stub-link affordance (no case-study pages exist yet), Contact gained a CV
+download button. §4.3, §4.4, §4.6, §6 updated to match.
 
 ## 1. Goal
 
@@ -73,7 +81,9 @@ web/src/
 
 1. **Nav** (fixed, glass): three zones per the prototype — wordmark (mono,
    dimmed TLD) left, anchor links Journey / Work / Contact **centered** (plain
-   sans, not mono), status pill "Open to senior roles" right. Mobile: wordmark
+   sans, not mono), status pill (role · focus, e.g. "Tech Lead · Fintech &
+   AI" — see spec 005 for why this avoids "open to work" framing) right.
+   Mobile: wordmark
    + status dot only (links live as in-page anchors; no hamburger in Phase 1).
 2. **Hero** (min-height 100svh, centered): eyebrow → gradient headline
    ("Systems that move money. / AI that shows its work.", second line gold) →
@@ -94,8 +104,9 @@ web/src/
    aligned with the nav.
 4. **Work** (`#work`): header ("02 · Selected work", "Case studies, not
    screenshots.") + 3 cards (Gastra / Banking at scale / degiorgi.dev), each
-   with kind label, title, summary, "read case study →" affordance (stub links
-   in Phase 1). Mobile: single column.
+   with kind label, title, summary. Static panels, not links — no case-study
+   pages exist yet (content phase, per project roadmap); a "read case study"
+   affordance returns when those pages do. Mobile: single column.
 5. **Stack**: header "03 · Stack" + tools grouped by category + mono footnote
    ("// tools change. The discipline doesn't."). Categories render as `//
    category` mono comment labels (echoing the footnote's own comment syntax),
@@ -105,9 +116,17 @@ web/src/
    library dependency); tools without a known icon render label-only. Data
    lives in `messages.ts` as `stack.categories: { label, tools: { name, icon?
    } }[]`.
-6. **Contact** (`#contact`): gradient headline CTA, subline, actions (gold
-   mailto button + ghost LinkedIn/GitHub/X), `GET /contact → 200 OK` badge.
-   All URLs from `messages.ts`.
+6. **Contact** (`#contact`): gradient headline CTA, subline, actions (a
+   single gold pill with two click zones: email text opens a mail app, an
+   inline copy icon copies it, ghost CV download (download icon) /
+   LinkedIn / GitHub / X), `GET /contact → 200 OK` badge. All URLs from
+   `messages.ts`. The gold pill is hand-built in `Contact.tsx` rather than
+   composed from `Button` + `CopyButton` side by side — two adjacent pills
+   read as unrelated controls; one pill with an internal divider reads as
+   one action with an option. Copy affordance is
+   `components/ui/CopyButton.tsx` (spec 005); download/copy icons are
+   hand-built glyphs in `components/ui/icons.tsx`, not vendored brand marks
+   (contrast §4.5).
 7. **Dock** (fixed): specified in spec 003; not built in this shell. The
    contact section still reserves its bottom clearance (§4.6) so 003 adds no CLS.
 
@@ -126,8 +145,9 @@ Scroll reveals: fade-up via IntersectionObserver on section heads and cards.
 
 ## 6. Owner-provided data (blockers for content, not for build)
 
-`messages.ts` ships with clearly marked placeholders until the owner supplies:
-real timeline dates, email address, LinkedIn/GitHub/X URLs, CV file.
+Real timeline dates, email address, LinkedIn/GitHub/X URLs, and CV file are
+in. Content sourcing, voice, and remaining gaps are tracked in **spec 005**;
+the Contact subline is still `PLACEHOLDER` there.
 
 ## 7. Acceptance criteria
 

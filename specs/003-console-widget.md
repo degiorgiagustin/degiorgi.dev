@@ -118,6 +118,18 @@ Session cap: after N questions (default 10) the adapter returns
 email/LinkedIn. Client-enforced by the mock in Phase 1; server-enforced in
 Phase 3 with identical client copy.
 
+Revised spec 005: this hand-off row isn't exclusive to `budget_exhausted`
+anymore. It also renders for `unavailable` and for the mock's own free-text
+`generic` fallback, since all three end the exchange by pointing the user at
+direct human contact instead of embedding the email as inert prose inside
+the answer text. The email is a real `mailto:` link plus an adjacent
+`CopyButton` (`components/ui/CopyButton.tsx`), not a link whose click
+behavior got silently swapped to copy-only. LinkedIn/GitHub/X render as
+borderless icon links (`components/ui/IconLink.tsx`) instead of the plain
+text word "LinkedIn" — same monochrome `Icon` component Stack uses, sized to
+the 44px touch floor but without Button's bordered ghost treatment (too
+heavy for this compact inline row).
+
 ## 6. States & accessibility
 
 - Idle → typing → submitted (input disabled, subtle activity indicator) →

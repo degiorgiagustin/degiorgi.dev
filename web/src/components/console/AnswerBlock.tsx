@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { agentConsole, contact, links } from "@/content/messages";
 import type { AgentExchange } from "@/lib/agent/session";
+import { Icon } from "@/components/stack/Icon";
+import { CopyButton } from "@/components/ui/CopyButton";
+import { IconLink } from "@/components/ui/IconLink";
 import { TextButton } from "./TextButton";
 import { TraceDetail } from "./TraceDetail";
 
@@ -29,8 +32,15 @@ export function AnswerBlock({ exchange, variant = "panel" }: AnswerBlockProps) {
   const settled = exchange.status === "settled";
   const response = exchange.response;
   const trace = response?.trace;
-  const lockout =
-    response?.kind === "rejection" && response.reason === "budget_exhausted";
+  // Any response that hands the conversation off to direct human contact:
+  // the budget/unavailable rejections, and the mock's own free-text fallback
+  // (spec 003 §5 "the mock is honest about being a mock").
+  const showContact =
+    (response?.kind === "rejection" &&
+      (response.reason === "budget_exhausted" ||
+        response.reason === "unavailable")) ||
+    (response?.kind === "answer" &&
+      response.text === agentConsole.generic.text);
 
   return (
     <div
@@ -47,23 +57,43 @@ export function AnswerBlock({ exchange, variant = "panel" }: AnswerBlockProps) {
         </p>
       )}
 
-      {/* Friendly lockout points to email/LinkedIn (spec 003 §5). */}
-      {settled && lockout && (
-        <p className="mt-2 flex flex-wrap gap-x-5 font-mono text-xs">
-          <a
-            href={`mailto:${links.email}`}
-            className="text-gold inline-flex min-h-11 items-center"
-          >
-            {contact.cta.email}
-          </a>
-          <a
-            href={links.linkedin}
-            target="_blank"
-            rel="noreferrer"
-            className="text-gold inline-flex min-h-11 items-center"
-          >
-            {contact.cta.linkedin}
-          </a>
+      {/* Hands off to direct human contact (spec 003 §5): email is a real
+          mailto: link plus a small copy affordance, not buried in prose. */}
+      {settled && showContact && (
+        <p className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-xs">
+          <span className="inline-flex items-center gap-1">
+            <a
+              href={`mailto:${links.email}`}
+              className="text-gold inline-flex min-h-11 items-center"
+            >
+              {contact.cta.email}
+            </a>
+            <CopyButton
+              value={links.email}
+              label={contact.cta.copyEmail}
+              copiedLabel={contact.cta.copyEmailCopied}
+            />
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <IconLink
+              href={links.linkedin}
+              label={contact.cta.linkedin}
+              external
+              icon={<Icon slug="linkedin" className="size-4" />}
+            />
+            <IconLink
+              href={links.github}
+              label={contact.cta.github}
+              external
+              icon={<Icon slug="github" className="size-4" />}
+            />
+            <IconLink
+              href={links.x}
+              label={contact.cta.x}
+              external
+              icon={<Icon slug="x" className="size-4" />}
+            />
+          </span>
         </p>
       )}
 
