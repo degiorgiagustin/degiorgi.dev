@@ -14,9 +14,9 @@ export function Work() {
       />
       <ul className="grid grid-cols-1 gap-3.5 lg:grid-cols-3">
         {work.cards.map((card) => (
-          <li key={card.title}>
-            <Reveal>
-              <WorkCard card={card} linkLabel={work.linkLabel} />
+          <li key={card.title} className="h-full">
+            <Reveal className="h-full">
+              <WorkCard card={card} />
             </Reveal>
           </li>
         ))}

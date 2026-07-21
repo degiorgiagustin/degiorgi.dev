@@ -139,6 +139,26 @@ body {
     outline: 2px solid var(--gold);
     outline-offset: 2px;
   }
+
+  /* Tailwind dropped the default `cursor: pointer` on <button> in v3.3
+     (deferring to the browser default, which is `cursor: default`, not
+     pointer). Every real button in this app performs a click action, so
+     restore the affordance globally instead of patching each component. */
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* Gold text selection (spec 001 §2 accent list) — same pairing as the gold
+     button (dark text on gold), already contrast-verified there. */
+  ::selection {
+    background-color: var(--gold);
+    color: var(--bg);
+  }
+
+  ::-moz-selection {
+    background-color: var(--gold);
+    color: var(--bg);
+  }
 }
 
 /*

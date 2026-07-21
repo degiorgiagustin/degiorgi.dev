@@ -8,6 +8,7 @@ type BaseProps = {
   href: string;
   variant: "gold" | "ghost";
   external?: boolean;
+  onClick?: () => void; // analytics-only side effect; navigation is unchanged
 };
 
 type ButtonProps =
@@ -23,7 +24,7 @@ const variantClass: Record<BaseProps["variant"], string> = {
 };
 
 export function Button(props: ButtonProps) {
-  const { href, variant, external } = props;
+  const { href, variant, external, onClick } = props;
   const shapeClass = props.icon
     ? "size-11 shrink-0"
     : "min-h-11 px-5 font-mono text-xs";
@@ -32,6 +33,7 @@ export function Button(props: ButtonProps) {
     <a
       href={href}
       aria-label={props.icon ? props.label : undefined}
+      onClick={onClick}
       {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
       className={`rounded-button inline-flex items-center justify-center transition ${shapeClass} ${variantClass[variant]}`}
     >

@@ -30,6 +30,11 @@ export interface AgentAnswer {
   text: string; // may arrive as a stream of deltas
   sources: string[]; // reserved: no console surface renders this yet
   trace: { chunks: TraceChunk[]; meta: TraceMeta };
+  // Set true when this response should end with a hand-off to direct human
+  // contact (mailto/social row). Adapter-driven rather than left for the UI
+  // to infer from response.text — text is free-form copy, not a stable
+  // signal, and Phase 3's real answers will never match the mock's strings.
+  showContact?: boolean;
 }
 
 export interface AgentRejection {
@@ -37,6 +42,7 @@ export interface AgentRejection {
   reason: "off_topic" | "rate_limited" | "budget_exhausted" | "unavailable";
   text: string; // human-readable, on-brand
   trace?: { chunks: TraceChunk[]; meta: Partial<TraceMeta> };
+  showContact?: boolean;
 }
 
 export type AgentResponse = AgentAnswer | AgentRejection;
