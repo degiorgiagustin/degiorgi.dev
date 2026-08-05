@@ -574,7 +574,7 @@ export const contact = {
     es: "Me gusta hablar de estos temas: fintech, sistemas distribuidos, ingeniería de sistemas. Si también te interesa, contactame.",
   } satisfies Localized,
   cta: {
-    email: "hello@degiorgi.dev", // data (an address), not copy — not translated
+    email: "agustin@degiorgi.dev", // data (an address), not copy — not translated
     linkedin: { en: "LinkedIn", es: "LinkedIn" } satisfies Localized,
     github: { en: "GitHub", es: "GitHub" } satisfies Localized,
     x: { en: "X", es: "X" } satisfies Localized,
@@ -596,7 +596,7 @@ export const contact = {
 // External links consumed by Contact (spec 002 §4.6, §8). Not a page section:
 // no eyebrow/headline of its own; that content belongs to `contact` above.
 export const links = {
-  email: "hello@degiorgi.dev",
+  email: "agustin@degiorgi.dev",
   // LinkedIn serves a distinct URL per profile language (not just query-string
   // decoration — omitting ?locale=en-US on the English page lands a Spanish
   // speaker on the Spanish profile by default), so this is genuinely
